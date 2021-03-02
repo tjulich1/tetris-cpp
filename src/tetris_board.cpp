@@ -1,10 +1,11 @@
+// Trent Julich ~ 03/02/2021
+
 #include "tetris_board.hpp"
 #include <iostream>
 
 TetrisBoard::TetrisBoard() {
   rows_ = 20;
   cols_ = 10;
-  
   std::vector<char> empty_row(cols_);
   std::vector<std::vector<char>> all_rows(rows_);
   std::fill(empty_row.begin(), empty_row.end(), '-');
