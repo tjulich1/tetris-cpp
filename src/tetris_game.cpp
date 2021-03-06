@@ -2,6 +2,7 @@
 
 #include "tetris_game.hpp"
 #include "user_input.hpp"
+#include "block.hpp"
 #include <iostream>
 
 enum UserEventCodes {
@@ -40,12 +41,11 @@ void TetrisGame::StartGame() {
 			if (e.type == SDL_QUIT) {
 				quit = true;
 			} else if (e.type == SDL_USEREVENT) {
-        std::cout << "In user event" << std::endl;
 				if (e.user.code == DROP) {
           MoveDown();
         }
 			} else {
-        handleUserInput(e);
+        HandleUserInput(e);
       }
     } 
     SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
@@ -110,7 +110,6 @@ bool TetrisGame::IsUnderPieceClear() {
 
   PieceState current_state = current_piece_.get_current_state();
   for (int i = 0; i < current_state.blocks.size(); i++) {
-    std::cout << "Block " << i << std::endl;
     Block current_block = current_state.blocks[i];
     current_block_row = current_piece_row + current_block.y;
     current_block_col = current_piece_col + current_block.x;
@@ -124,6 +123,30 @@ bool TetrisGame::IsUnderPieceClear() {
   return under_piece_clear;
 }
 
+bool TetrisGame::IsRightOfPieceClear() {
+  bool right_piece_clear = true;
+  
+  int current_piece_row = current_piece_.get_row();
+  int current_piece_col = current_piece_.get_col();
+
+  PieceState current_state = current_piece_.get_current_state();
+  Block current_block;
+  int current_block_row;
+  int current_block_col;
+
+  for (int i = 0; i < current_state.blocks.size(); i++) {
+    current_block = current_state.blocks[i];
+    current_block_row = current_piece_row + current_block.y;
+    current_block_col = current_piece_col + current_block.x;
+
+    if (board_.IsBlockFilled(current_block_row, current_block_col + 1)) {
+      right_piece_clear = false;
+      break;
+    }
+  }
+  return right_piece_clear;
+}
+
 void TetrisGame::NextPiece() {
   // Lock the current piece into the board.
   LockPiece();
@@ -133,28 +156,38 @@ void TetrisGame::NextPiece() {
 }
 
 void TetrisGame::MoveDown() {
-  // Check if the current piece is not at the bottom of the board
-  if (current_piece_.get_current_state().height + current_piece_.get_row() < board_.get_rows()) {
-    if (IsUnderPieceClear()) {
+  // Check if current piece is above board floor and the there are no blocks below.
+  if (current_piece_.get_current_state().height + current_piece_.get_row() < board_.get_rows()
+    && IsUnderPieceClear()) {
       current_piece_.Down();
-    } else {
-      NextPiece();
-    }
   } else {
     NextPiece();
   }
 }
 
 void TetrisGame::MoveRight() {
+  // Check that right move doesn't go off game board.
   if (current_piece_.get_col() + current_piece_.get_current_state().width < board_.get_cols()) {
-    current_piece_.Right();
-  }
+    // Check that there are no blocks to the right of current piece.
+    if (IsRightOfPieceClear()) {
+      current_piece_.Right();
+    } 
+  } 
 }
 
 void TetrisGame::MoveLeft() {
+  // Check that left move doesn't go off game board.
   if (current_piece_.get_col() > 0) {
     current_piece_.Left();
   }
+}
+
+void TetrisGame::RotateClockwise() {
+  current_piece_.Clockwise();
+}
+
+void TetrisGame::RotateCounterClockwise() {
+  current_piece_.CounterClockwise();
 }
 
 void TetrisGame::LockPiece() {

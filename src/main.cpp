@@ -1,8 +1,10 @@
 // Trent Julich ~ 03/02/2021
 
-#include <SDL.h>
 #include "tetris_game.hpp"
+#include "user_input.hpp"
+
 #include <iostream>
+#include <SDL.h>
 
 //Screen dimension constants
 const int kWindowWidth = 200;
@@ -30,16 +32,18 @@ int main( int argc, char* args[] )
 
 			// Create new instance of game, using renderer.
 		  current_game = new TetrisGame(renderer);
+
+			// This call starts the game loop, and only returns when user ends game.
 			current_game->StartGame();
 
+			// Clean up current game
 			delete current_game;
-			current_game = 0;	
+			current_game = nullptr;	
+
 			SDL_DestroyRenderer(renderer);
 		}
 	}
-
 	SDL_DestroyWindow( window );
 	SDL_Quit();
-
 	return 0;
 }

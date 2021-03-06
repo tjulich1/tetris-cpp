@@ -5,7 +5,6 @@
 
 #include "piece_generator.hpp"
 #include "tetris_board.hpp"
-#include <vector>
 #include <SDL.h>
 
 const std::vector<char> kBlockTypes{'z'};
@@ -23,6 +22,8 @@ class TetrisGame {
     void MoveLeft();
     void MoveRight();
     void MoveDown();
+    void RotateClockwise();
+    void RotateCounterClockwise();
   private: 
     PieceGenerator generator_;
     TetrisBoard board_;
@@ -31,6 +32,7 @@ class TetrisGame {
 
     unsigned int timer_interval_;
     bool IsUnderPieceClear();
+    bool IsRightOfPieceClear();
     void LockPiece();
     void NextPiece();
 };

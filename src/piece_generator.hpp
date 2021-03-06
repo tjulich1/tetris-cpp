@@ -4,14 +4,18 @@
 #define PIECE_GENERATOR_H
 
 #include "tetris_piece.hpp"
-#include <vector>
-#include <map>
 
 class PieceGenerator {
   public: 
     TetrisPiece GetPiece();
   private:
     TetrisPiece CreateZBlock();
+    TetrisPiece CreateSBlock();
+    TetrisPiece CreateOBlock();
+    TetrisPiece CreateIBlock();
+    TetrisPiece CreateLBlock();
+    TetrisPiece CreateJBlock();
+    TetrisPiece CreateTBlock();
 };
 
 #endif

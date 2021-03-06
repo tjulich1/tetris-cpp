@@ -8,8 +8,8 @@
 
 extern TetrisGame* current_game;
 
-void handleKeyDown(SDL_Event e);
+void HandleKeyDown(SDL_Event e);
 
-void handleUserInput(SDL_Event e);
+void HandleUserInput(SDL_Event e);
 
 #endif

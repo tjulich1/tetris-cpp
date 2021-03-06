@@ -20,8 +20,11 @@ class TetrisPiece {
     void Right();
     void Left();
     void Down();
+    void Clockwise();
+    void CounterClockwise();
 
     PieceState get_current_state();
+    PieceState get_next_state();
     int get_row();
     int get_col();
   private:

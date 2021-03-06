@@ -24,6 +24,10 @@ PieceState TetrisPiece::get_current_state() {
   }
 }
 
+PieceState TetrisPiece::get_next_state() {
+  return states_[(current_state_+1)%states_.size()];
+}
+
 void TetrisPiece::Right() {
   col_+=1;
 }
@@ -34,6 +38,18 @@ void TetrisPiece::Left() {
 
 void TetrisPiece::Down() {
   row_+=1;
+}
+
+void TetrisPiece::Clockwise() {
+  current_state_ = (current_state_ + 1) % states_.size();
+}
+
+void TetrisPiece::CounterClockwise() {
+  if (current_state_ == 0) {
+    current_state_ = states_.size() - 1;
+  } else {
+    current_state_--;
+  }
 }
 
 int TetrisPiece::get_col() {
