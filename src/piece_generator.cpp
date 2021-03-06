@@ -9,7 +9,8 @@
 
 
 TetrisPiece PieceGenerator::GetPiece() {
-  int rand_num = rand() % 3;
+  int number_of_pieces = 4;
+  int rand_num = rand() % 4;
   TetrisPiece piece;
   switch(rand_num) {
     case 0:
@@ -20,6 +21,9 @@ TetrisPiece PieceGenerator::GetPiece() {
       break;
     case 2:
       piece = CreateSBlock();
+      break;
+    case 3:
+      piece = CreateIBlock();
       break;
     default:
       piece = CreateOBlock();
@@ -114,6 +118,43 @@ TetrisPiece PieceGenerator::CreateSBlock() {
 
   state_width = 2;
   state_height = 3;
+
+  PieceState second_state{
+    state_two_blocks, state_width, state_height
+  };
+
+  return TetrisPiece(std::vector<PieceState>{
+    first_state, second_state
+  });
+}
+
+TetrisPiece PieceGenerator::CreateIBlock() {
+  std::vector<Block> state_one_blocks{
+    Block{0, 0, 'i'},
+    Block{0, 1, 'i'},
+    Block{0, 2, 'i'},
+    Block{0, 3, 'i'}
+  };
+
+  std::vector<Block> state_two_blocks{
+    Block{0, 0, 'i'},
+    Block{1, 0, 'i'},
+    Block{2, 0, 'i'},
+    Block{3, 0, 'i'}
+  };
+
+  int state_width;
+  int state_height;
+
+  state_width = 1;
+  state_height = 4;
+
+  PieceState first_state{
+    state_one_blocks, state_width, state_height
+  };
+
+  state_width = 4;
+  state_height = 1;
 
   PieceState second_state{
     state_two_blocks, state_width, state_height

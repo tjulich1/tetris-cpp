@@ -125,9 +125,6 @@ bool TetrisGame::IsUnderPieceClear() {
 
 bool TetrisGame::IsRightOfPieceClear() {
   bool right_piece_clear = true;
-  
-  int current_piece_row = current_piece_.get_row();
-  int current_piece_col = current_piece_.get_col();
 
   PieceState current_state = current_piece_.get_current_state();
   Block current_block;
@@ -136,8 +133,8 @@ bool TetrisGame::IsRightOfPieceClear() {
 
   for (int i = 0; i < current_state.blocks.size(); i++) {
     current_block = current_state.blocks[i];
-    current_block_row = current_piece_row + current_block.y;
-    current_block_col = current_piece_col + current_block.x;
+    current_block_row = current_piece_.get_row() + current_block.y;
+    current_block_col = current_piece_.get_col() + current_block.x;
 
     if (board_.IsBlockFilled(current_block_row, current_block_col + 1)) {
       right_piece_clear = false;
@@ -183,11 +180,18 @@ void TetrisGame::MoveLeft() {
 }
 
 void TetrisGame::RotateClockwise() {
-  current_piece_.Clockwise();
+  PieceState final_state = current_piece_.get_next_state();
+  // Check that the rotation doesnt put piece out of bounds.
+  if (!(current_piece_.get_col() + final_state.width > board_.get_cols())) {
+    current_piece_.Clockwise();
+  }
 }
 
 void TetrisGame::RotateCounterClockwise() {
-  current_piece_.CounterClockwise();
+  PieceState final_state = current_piece_.get_prev_state();
+  if (!(current_piece_.get_col() + final_state.width > board_.get_cols())) {
+    current_piece_.CounterClockwise();
+  }
 }
 
 void TetrisGame::LockPiece() {

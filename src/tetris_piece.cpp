@@ -28,6 +28,10 @@ PieceState TetrisPiece::get_next_state() {
   return states_[(current_state_+1)%states_.size()];
 }
 
+PieceState TetrisPiece::get_prev_state() {
+  return states_[(current_state_-1)%states_.size()];
+}
+
 void TetrisPiece::Right() {
   col_+=1;
 }

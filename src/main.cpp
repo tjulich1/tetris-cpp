@@ -7,8 +7,8 @@
 #include <SDL.h>
 
 //Screen dimension constants
-const int kWindowWidth = 200;
-const int kWindowHeight = 300;
+const int kWindowWidth = 300;
+const int kWindowHeight = 400;
 
 TetrisGame* current_game;
 

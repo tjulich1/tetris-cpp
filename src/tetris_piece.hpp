@@ -25,6 +25,7 @@ class TetrisPiece {
 
     PieceState get_current_state();
     PieceState get_next_state();
+    PieceState get_prev_state();
     int get_row();
     int get_col();
   private:
