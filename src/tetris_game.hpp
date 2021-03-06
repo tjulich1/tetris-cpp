@@ -33,6 +33,7 @@ class TetrisGame {
     unsigned int timer_interval_;
     bool IsUnderPieceClear();
     bool IsRightOfPieceClear();
+    bool IsLeftOfPieceClear();
     void LockPiece();
     void NextPiece();
 };

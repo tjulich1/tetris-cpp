@@ -26,8 +26,6 @@ unsigned int Tick(unsigned int p_interval, void* p_params) {
 TetrisGame::TetrisGame(SDL_Renderer* p_renderer) {
   renderer_ = p_renderer;
   current_piece_ = generator_.GetPiece();
-  board_.SetBlock(19, 9, 'w');
-  std::cout << board_.IsBlockFilled(19, 9) << board_.IsBlockFilled(18, 9) << std::endl;;
 }
 
 // Main Tetris game loop.
@@ -144,6 +142,27 @@ bool TetrisGame::IsRightOfPieceClear() {
   return right_piece_clear;
 }
 
+bool TetrisGame::IsLeftOfPieceClear() {
+  bool left_of_piece_clear = true;
+
+  PieceState current_piece_state = current_piece_.get_current_state();
+  Block current_block;
+  int current_block_row;
+  int current_block_col;
+  for (int i = 0; i < current_piece_state.blocks.size(); i++) {
+    current_block = current_piece_state.blocks[i];
+    current_block_row = current_piece_.get_row() + current_block.y;
+    current_block_col = current_piece_.get_col() + current_block.x;
+    std::cout << "Block: " << i << std::endl;
+    std::cout << current_block_row << ", " << current_block_col << std::endl;
+    if (board_.IsBlockFilled(current_block_row, current_block_col - 1)){
+      left_of_piece_clear = false;
+      break;
+    }
+  }
+  return left_of_piece_clear;
+}
+
 void TetrisGame::NextPiece() {
   // Lock the current piece into the board.
   LockPiece();
@@ -175,7 +194,10 @@ void TetrisGame::MoveRight() {
 void TetrisGame::MoveLeft() {
   // Check that left move doesn't go off game board.
   if (current_piece_.get_col() > 0) {
-    current_piece_.Left();
+    // Check that left move doesn't hit other blocks
+    if (IsLeftOfPieceClear()) {
+      current_piece_.Left();
+    }
   }
 }
 
