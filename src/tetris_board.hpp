@@ -12,6 +12,7 @@ class TetrisBoard {
     void PrintBoard();
     bool IsBlockFilled(int p_row, int p_col);
     void SetBlock(int p_row, int p_col, char p_block_type);
+    void ClearRows();
     int get_rows();
     int get_cols();
   private:

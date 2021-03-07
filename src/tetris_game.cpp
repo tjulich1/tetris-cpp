@@ -107,6 +107,9 @@ void TetrisGame::NextPiece() {
   // Lock the current piece into the board.
   LockPiece();
 
+  // Clear any rows that are completed.
+  board_.ClearRows();
+
   // Then spawn a new piece
   current_piece_ = generator_.GetPiece();
 }

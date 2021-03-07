@@ -17,6 +17,27 @@ TetrisBoard::~TetrisBoard() {
 
 }
 
+void TetrisBoard::ClearRows() {
+  std::vector<char> current_row;
+  bool should_clear = true;
+  for (int i = 0; i < blocks_.size(); i++) {
+    current_row = blocks_[i];
+    for (int j = 0; j < current_row.size(); j++) {
+      if (current_row[j] == '-') {
+        should_clear = false;
+        break;
+      }
+    }
+    if (should_clear) {
+      std::vector<char> empty_row(cols_);
+      std::fill(empty_row.begin(), empty_row.end(), '-');
+      blocks_.erase(blocks_.begin() + i);
+      blocks_.insert(blocks_.begin(), empty_row);
+    }
+    should_clear = true;
+  }
+}
+
 int TetrisBoard::get_rows() {
   return rows_;
 }
