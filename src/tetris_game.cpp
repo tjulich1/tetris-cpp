@@ -9,6 +9,12 @@ enum UserEventCodes {
   DROP,
 };
 
+enum StateCodes {
+  CURRENT_STATE,
+  CLOCKWISE_STATE,
+  COUNTER_CLOCKWISE_STATE
+};
+
 unsigned int Tick(unsigned int p_interval, void* p_params) {
   std::cout << "Game Tick" << std::endl;
   SDL_Event drop_event;
@@ -97,72 +103,6 @@ void TetrisGame::Render() {
   }
 }
 
-bool TetrisGame::IsUnderPieceClear() {
-  bool under_piece_clear = true;
-
-  int current_piece_row = current_piece_.get_row();
-  int current_piece_col = current_piece_.get_col();
-
-  int current_block_row;
-  int current_block_col;
-
-  PieceState current_state = current_piece_.get_current_state();
-  for (int i = 0; i < current_state.blocks.size(); i++) {
-    Block current_block = current_state.blocks[i];
-    current_block_row = current_piece_row + current_block.y;
-    current_block_col = current_piece_col + current_block.x;
-    
-    // Check on board if under each block is clear
-    if (board_.IsBlockFilled(current_block_row + 1, current_block_col)) {
-      under_piece_clear = false;
-      break;
-    }
-  }
-  return under_piece_clear;
-}
-
-bool TetrisGame::IsRightOfPieceClear() {
-  bool right_piece_clear = true;
-
-  PieceState current_state = current_piece_.get_current_state();
-  Block current_block;
-  int current_block_row;
-  int current_block_col;
-
-  for (int i = 0; i < current_state.blocks.size(); i++) {
-    current_block = current_state.blocks[i];
-    current_block_row = current_piece_.get_row() + current_block.y;
-    current_block_col = current_piece_.get_col() + current_block.x;
-
-    if (board_.IsBlockFilled(current_block_row, current_block_col + 1)) {
-      right_piece_clear = false;
-      break;
-    }
-  }
-  return right_piece_clear;
-}
-
-bool TetrisGame::IsLeftOfPieceClear() {
-  bool left_of_piece_clear = true;
-
-  PieceState current_piece_state = current_piece_.get_current_state();
-  Block current_block;
-  int current_block_row;
-  int current_block_col;
-  for (int i = 0; i < current_piece_state.blocks.size(); i++) {
-    current_block = current_piece_state.blocks[i];
-    current_block_row = current_piece_.get_row() + current_block.y;
-    current_block_col = current_piece_.get_col() + current_block.x;
-    std::cout << "Block: " << i << std::endl;
-    std::cout << current_block_row << ", " << current_block_col << std::endl;
-    if (board_.IsBlockFilled(current_block_row, current_block_col - 1)){
-      left_of_piece_clear = false;
-      break;
-    }
-  }
-  return left_of_piece_clear;
-}
-
 void TetrisGame::NextPiece() {
   // Lock the current piece into the board.
   LockPiece();
@@ -172,46 +112,33 @@ void TetrisGame::NextPiece() {
 }
 
 void TetrisGame::MoveDown() {
-  // Check if current piece is above board floor and the there are no blocks below.
-  if (current_piece_.get_current_state().height + current_piece_.get_row() < board_.get_rows()
-    && IsUnderPieceClear()) {
-      current_piece_.Down();
+  if (IsLegalMove(CURRENT_STATE, 1, 0)) {
+    current_piece_.Down();
   } else {
     NextPiece();
   }
 }
 
 void TetrisGame::MoveRight() {
-  // Check that right move doesn't go off game board.
-  if (current_piece_.get_col() + current_piece_.get_current_state().width < board_.get_cols()) {
-    // Check that there are no blocks to the right of current piece.
-    if (IsRightOfPieceClear()) {
-      current_piece_.Right();
-    } 
+  if (IsLegalMove(CURRENT_STATE, 0, 1)) {
+    current_piece_.Right();
   } 
 }
 
 void TetrisGame::MoveLeft() {
-  // Check that left move doesn't go off game board.
-  if (current_piece_.get_col() > 0) {
-    // Check that left move doesn't hit other blocks
-    if (IsLeftOfPieceClear()) {
-      current_piece_.Left();
-    }
+  if (IsLegalMove(CURRENT_STATE, 0, -1)) {
+    current_piece_.Left();
   }
 }
 
 void TetrisGame::RotateClockwise() {
-  PieceState final_state = current_piece_.get_next_state();
-  // Check that the rotation doesnt put piece out of bounds.
-  if (!(current_piece_.get_col() + final_state.width > board_.get_cols())) {
+  if (IsLegalMove(CLOCKWISE_STATE, 0, 0)) {
     current_piece_.Clockwise();
   }
 }
 
 void TetrisGame::RotateCounterClockwise() {
-  PieceState final_state = current_piece_.get_prev_state();
-  if (!(current_piece_.get_col() + final_state.width > board_.get_cols())) {
+  if (IsLegalMove(COUNTER_CLOCKWISE_STATE, 0, 0)) {
     current_piece_.CounterClockwise();
   }
 }
@@ -230,4 +157,59 @@ void TetrisGame::LockPiece() {
     // Update the board and mark where current block is.
     board_.SetBlock(current_block_global_y, current_block_global_x, current_block.block_code);
   }
+}
+
+bool TetrisGame::IsPieceInBounds(PieceState p_state_to_check, int p_row_transform, int p_col_transform) {
+  bool in_bounds = true;
+  Block current_block;
+  for (int i = 0; i < p_state_to_check.blocks.size(); i++) {
+    current_block = p_state_to_check.blocks[i];
+    int row = current_piece_.get_row() + current_block.y + p_row_transform;
+    int col = current_piece_.get_col() + current_block.x + p_col_transform;
+    if (row >= board_.get_rows() || col >= board_.get_cols() || col < 0) {
+      in_bounds = false;
+    }
+  }
+  return in_bounds;
+}
+
+bool TetrisGame::CheckCollisions(PieceState p_state_to_check, int p_row_transform, int p_col_transform) {
+  bool collisions = false;
+  Block current_block;
+  for (int i = 0; i < p_state_to_check.blocks.size(); i++) {
+    current_block = p_state_to_check.blocks[i];
+    int row = current_piece_.get_row() + current_block.y + p_row_transform;
+    int col = current_piece_.get_col() + current_block.x + p_col_transform;
+    if (board_.IsBlockFilled(row, col)) {
+      collisions = true;
+      break;
+    }
+  }
+  return collisions;
+}
+
+bool TetrisGame::IsLegalMove(int p_state_number, int p_row_transform, int p_col_transform) {
+  bool legal = true;
+  PieceState state;
+  switch (p_state_number) {
+    case CURRENT_STATE:
+      state = current_piece_.get_current_state();
+      break;
+    case CLOCKWISE_STATE:
+      state = current_piece_.get_next_state();
+      break;
+    case COUNTER_CLOCKWISE_STATE:
+      state = current_piece_.get_prev_state();
+      break;
+    default:
+      state = current_piece_.get_current_state();
+  }
+
+  // Move is not legal if it goes out of bounds, or if it hits other blocks.
+  if (!IsPieceInBounds(state, p_row_transform, p_col_transform) 
+    || CheckCollisions(state, p_row_transform, p_col_transform)) {
+    legal = false;
+  }
+
+  return legal;
 }

@@ -31,11 +31,14 @@ class TetrisGame {
     SDL_Renderer* renderer_; 
 
     unsigned int timer_interval_;
-    bool IsUnderPieceClear();
-    bool IsRightOfPieceClear();
-    bool IsLeftOfPieceClear();
+
+    bool IsPieceInBounds(PieceState p_state_to_check, int p_row_transform, int p_col_transform);
+    bool CheckCollisions(PieceState p_state_to_check, int p_row_transform, int p_col_transform);
+    bool IsLegalMove(int p_state_number, int p_row_transform, int p_col_transform);
+    
     void LockPiece();
     void NextPiece();
+    bool IsClockwiseClear();
 };
 
 #endif
