@@ -9,8 +9,8 @@
 
 
 TetrisPiece PieceGenerator::GetPiece() {
-  int number_of_pieces = 4;
-  int rand_num = rand() % 4;
+  int number_of_pieces = 7;
+  int rand_num = rand() % number_of_pieces;
   TetrisPiece piece;
   switch(rand_num) {
     case 0:
@@ -24,6 +24,15 @@ TetrisPiece PieceGenerator::GetPiece() {
       break;
     case 3:
       piece = CreateIBlock();
+      break;
+    case 4:
+      piece = CreateLBlock();
+      break;
+    case 5:
+      piece = CreateJBlock();
+      break;
+    case 6: 
+      piece = CreateTBlock();
       break;
     default:
       piece = CreateOBlock();
@@ -163,4 +172,177 @@ TetrisPiece PieceGenerator::CreateIBlock() {
   return TetrisPiece(std::vector<PieceState>{
     first_state, second_state
   });
+}
+
+TetrisPiece PieceGenerator::CreateLBlock() {
+  std::vector<Block> first_state_blocks{
+    Block{0, 0, 'l'},
+    Block{0, 1, 'l'},
+    Block{0, 2, 'l'},
+    Block{1, 2, 'l'}
+  };
+
+  std::vector<Block> second_state_blocks{
+    Block{0, 0, 'l'},
+    Block{1, 0, 'l'},
+    Block{2, 0, 'l'},
+    Block{0, 1, 'l'}
+  };
+
+  std::vector<Block> third_state_blocks{
+    Block{0, 0, 'l'},
+    Block{1, 0, 'l'},
+    Block{1, 1, 'l'},
+    Block{1, 2, 'l'}
+  };
+
+  std::vector<Block> fourth_state_blocks{
+    Block{2, 0, 'l'},
+    Block{0, 1, 'l'},
+    Block{1, 1, 'l'},
+    Block{2, 1, 'l'}
+  };
+
+  int state_width;
+  int state_height;
+
+  state_width = 2;
+  state_height = 3;
+
+  PieceState first_state{
+    first_state_blocks, state_width, state_height
+  };
+
+  PieceState third_state{
+    third_state_blocks, state_width, state_height
+  };
+
+  state_width = 3;
+  state_height = 2;
+
+  PieceState second_state{
+    second_state_blocks, state_width, state_height
+  };
+
+  PieceState fourth_state{
+    fourth_state_blocks, state_width, state_height
+  };
+
+  return TetrisPiece(std::vector<PieceState>{
+    first_state, second_state, third_state, fourth_state
+  });
+}
+
+TetrisPiece PieceGenerator::CreateJBlock() {
+  std::vector<Block> first_state_blocks{
+    Block{1, 0, 'j'},
+    Block{1, 1, 'j'},
+    Block{1, 2, 'j'},
+    Block{0, 2, 'j'}
+  };
+
+  std::vector<Block> second_state_blocks{
+    Block{0, 0, 'j'},
+    Block{0, 1, 'j'},
+    Block{1, 1, 'j'},
+    Block{2, 1, 'j'}
+  };
+
+  std::vector<Block> third_state_blocks{
+    Block{0, 0, 'j'},
+    Block{1, 0, 'j'},
+    Block{0, 1, 'j'},
+    Block{0, 2, 'j'}
+  };
+
+  std::vector<Block> fourth_state_blocks{
+    Block{0, 0, 'j'},
+    Block{1, 0, 'j'},
+    Block{2, 0, 'j'},
+    Block{2, 1, 'j'}
+  };
+
+  int state_width;
+  int state_height;
+
+  state_width = 2;
+  state_height = 3;
+
+  PieceState first_state{
+    first_state_blocks, state_width, state_height
+  };
+
+  PieceState third_state{
+    third_state_blocks, state_width, state_height
+  };
+
+  state_width = 3;
+  state_height = 2;
+
+  PieceState second_state{
+    second_state_blocks, state_width, state_height
+  };
+
+  PieceState fourth_state{
+    fourth_state_blocks, state_width, state_height
+  };
+
+  return TetrisPiece(std::vector<PieceState>{
+    first_state, second_state, third_state, fourth_state
+  });
+}
+
+TetrisPiece PieceGenerator::CreateTBlock() {
+  std::vector<Block> first_state_blocks{
+    Block{1, 0, 't'},
+    Block{0, 1, 't'},
+    Block{1, 1, 't'},
+    Block{2, 1, 't'}
+  };
+
+  std::vector<Block> second_state_blocks{
+    Block{0, 0, 't'},
+    Block{0, 1, 't'},
+    Block{0, 2, 't'},
+    Block{1, 1, 't'}
+  };
+  std::vector<Block> third_state_blocks{
+    Block{0, 0, 't'},
+    Block{1, 0, 't'},
+    Block{2, 0, 't'},
+    Block{1, 1, 't'}
+  };
+  std::vector<Block> fourth_state_blocks{
+    Block{1, 0, 't'},
+    Block{1, 1, 't'},
+    Block{1, 2, 't'},
+    Block{0, 1, 't'}
+  };
+
+  int state_width = 3;
+  int state_height = 2;
+
+  PieceState first_state{
+    first_state_blocks, state_width, state_height
+  };
+
+  PieceState third_state{
+    third_state_blocks, state_width, state_height
+  };
+
+  state_width = 2;
+  state_height = 3;
+
+  PieceState second_state{
+    second_state_blocks, state_width, state_height
+  };
+
+  PieceState fourth_state{
+    fourth_state_blocks, state_width, state_height
+  };
+
+  return TetrisPiece(std::vector<PieceState>{
+    first_state, second_state, third_state, fourth_state
+  });
+
 }
