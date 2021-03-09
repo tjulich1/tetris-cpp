@@ -31,6 +31,7 @@ unsigned int Tick(unsigned int p_interval, void* p_params) {
 
 TetrisGame::TetrisGame(SDL_Renderer* p_renderer) {
   renderer_ = p_renderer;
+  InitColorMap();
   current_piece_ = generator_.GetPiece();
 }
 
@@ -39,6 +40,7 @@ void TetrisGame::StartGame() {
   SDL_Event e;
   bool quit = false;
   SDL_TimerID timer = SDL_AddTimer(3000, Tick, NULL);
+
 	while (!quit) {
 		while (SDL_PollEvent(&e)) {
 			// Exit game if exit command is given.
@@ -59,7 +61,21 @@ void TetrisGame::StartGame() {
 	}
 }
 
+void TetrisGame::InitColorMap() {
+  block_color_map_.insert({'j', SDL_Color{3, 65, 174}});
+  block_color_map_.insert({'s', SDL_Color{114, 203, 59}});
+  block_color_map_.insert({'o', SDL_Color{255, 213, 0}});
+  block_color_map_.insert({'l', SDL_Color{255, 151, 28}});
+  block_color_map_.insert({'z', SDL_Color{255, 50, 19}});
+  block_color_map_.insert({'t', SDL_Color{128, 77, 198}});
+  block_color_map_.insert({'i', SDL_Color{27, 222, 228}});
+}
+
 void TetrisGame::Render() {
+  int current_r;
+  int current_g;
+  int current_b;
+
   SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
   PieceState cur_state = current_piece_.get_current_state();
   int rows = board_.get_rows();
@@ -76,9 +92,15 @@ void TetrisGame::Render() {
   SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
 
   // Draw board
+  SDL_Color block_color;
   for (int i = 0; i < rows; i++) {
     for(int j = 0; j < cols; j++) {
       if (board_.IsBlockFilled(i, j)) {
+        block_color = block_color_map_.find(board_.GetBlock(i, j))->second;
+        current_r = block_color.r;
+        current_g = block_color.g;
+        current_b = block_color.b;
+        SDL_SetRenderDrawColor(renderer_, current_r, current_g, current_b, 255);
         rect = {
           j*kBlockDim,
           i*kBlockDim,
@@ -91,6 +113,11 @@ void TetrisGame::Render() {
   }
 
   // Draw current block
+  block_color = block_color_map_.find(cur_state.blocks[0].block_code)->second;
+  current_r = block_color.r;
+  current_g = block_color.g;
+  current_b = block_color.b;
+  SDL_SetRenderDrawColor(renderer_, current_r, current_g, current_b, 255);
   for (int i = 0; i < cur_state.blocks.size(); i++) {
     Block current_block = cur_state.blocks[i];
     rect = {

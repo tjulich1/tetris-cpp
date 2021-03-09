@@ -5,9 +5,9 @@
 
 #include "piece_generator.hpp"
 #include "tetris_board.hpp"
+#include <map>
 #include <SDL.h>
 
-const std::vector<char> kBlockTypes{'z'};
 const int kBlockDim = 20;
 const static int ROWS = 20;
 const static int COLS = 10;
@@ -29,6 +29,7 @@ class TetrisGame {
     TetrisBoard board_;
     TetrisPiece current_piece_;
     SDL_Renderer* renderer_; 
+    std::map<char, SDL_Color> block_color_map_;
 
     unsigned int timer_interval_;
 
@@ -39,6 +40,7 @@ class TetrisGame {
     void LockPiece();
     void NextPiece();
     bool IsClockwiseClear();
+    void InitColorMap();
 };
 
 #endif

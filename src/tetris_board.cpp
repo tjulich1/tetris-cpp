@@ -38,6 +38,10 @@ void TetrisBoard::ClearRows() {
   }
 }
 
+char TetrisBoard::GetBlock(int p_row, int p_col) {
+  return blocks_[p_row][p_col];
+}
+
 int TetrisBoard::get_rows() {
   return rows_;
 }
