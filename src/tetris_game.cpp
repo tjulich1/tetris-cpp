@@ -33,6 +33,7 @@ TetrisGame::TetrisGame(SDL_Renderer* p_renderer) {
   renderer_ = p_renderer;
   InitColorMap();
   current_piece_ = generator_.GetPiece();
+  paused_ = false;
 }
 
 // Main Tetris game loop.
@@ -42,16 +43,25 @@ void TetrisGame::StartGame() {
   SDL_TimerID timer = SDL_AddTimer(3000, Tick, NULL);
 
 	while (!quit) {
-		while (SDL_PollEvent(&e)) {
+		while (SDL_PollEvent(&e)) { 
 			// Exit game if exit command is given.
 			if (e.type == SDL_QUIT) {
 				quit = true;
-			} else if (e.type == SDL_USEREVENT) {
-				if (e.user.code == DROP) {
-          MoveDown();
+      // Ensure that the game is not paused.
+			} else if (!paused_) {
+        if (e.type == SDL_USEREVENT) {
+				  if (e.user.code == DROP) {
+            MoveDown();
+          }
+			  } else {
+          HandleUserInput(e);
         }
-			} else {
-        HandleUserInput(e);
+      // If the game IS paused
+      } else {
+        // Only handle button pressed to unpause the game.
+        if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
+          paused_ = false;
+        }
       }
     } 
     SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
@@ -61,6 +71,10 @@ void TetrisGame::StartGame() {
 	}
 }
 
+/*
+  Initializes map with characters mapping to RGB colors. Each char corresponds to a type of block 
+  that can appear on the game board.
+*/
 void TetrisGame::InitColorMap() {
   block_color_map_.insert({'j', SDL_Color{3, 65, 174}});
   block_color_map_.insert({'s', SDL_Color{114, 203, 59}});
@@ -76,8 +90,6 @@ void TetrisGame::Render() {
   int current_g;
   int current_b;
 
-  SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
-  PieceState cur_state = current_piece_.get_current_state();
   int rows = board_.get_rows();
   int cols = board_.get_cols();
 
@@ -112,12 +124,16 @@ void TetrisGame::Render() {
     }
   }
 
-  // Draw current block
+  PieceState cur_state = current_piece_.get_current_state();
+
+  // Lookup the color of the current piece.
   block_color = block_color_map_.find(cur_state.blocks[0].block_code)->second;
   current_r = block_color.r;
   current_g = block_color.g;
   current_b = block_color.b;
   SDL_SetRenderDrawColor(renderer_, current_r, current_g, current_b, 255);
+
+  // Draw each of the blocks of the current piece.
   for (int i = 0; i < cur_state.blocks.size(); i++) {
     Block current_block = cur_state.blocks[i];
     rect = {
@@ -141,6 +157,10 @@ void TetrisGame::NextPiece() {
   current_piece_ = generator_.GetPiece();
 }
 
+void TetrisGame::Pause() {
+  paused_ = true;
+}
+
 bool TetrisGame::MoveDown() {
   bool success = true;
   if (IsLegalMove(CURRENT_STATE, 1, 0)) {
@@ -153,9 +173,7 @@ bool TetrisGame::MoveDown() {
 }
 
 void TetrisGame::DropPiece() {
-  while(MoveDown()) {
-    /////////////////////////////
-  }
+  while(MoveDown()) { }
 }
 
 void TetrisGame::MoveRight() {

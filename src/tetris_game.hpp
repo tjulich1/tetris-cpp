@@ -17,20 +17,27 @@ unsigned int Tick(unsigned int p_interval, void* p);
 class TetrisGame {
   public:
     TetrisGame(SDL_Renderer* p_renderer);
+
     void StartGame();
     void Render();
+
+    // Methods used to modify the current piece.
     void MoveLeft();
     void MoveRight();
     bool MoveDown();
     void DropPiece();
     void RotateClockwise();
     void RotateCounterClockwise();
+
+    void Pause();
   private: 
     PieceGenerator generator_;
     TetrisBoard board_;
     TetrisPiece current_piece_;
     SDL_Renderer* renderer_; 
     std::map<char, SDL_Color> block_color_map_;
+
+    bool paused_;
 
     unsigned int timer_interval_;
 
