@@ -141,11 +141,20 @@ void TetrisGame::NextPiece() {
   current_piece_ = generator_.GetPiece();
 }
 
-void TetrisGame::MoveDown() {
+bool TetrisGame::MoveDown() {
+  bool success = true;
   if (IsLegalMove(CURRENT_STATE, 1, 0)) {
     current_piece_.Down();
   } else {
     NextPiece();
+    success = false;
+  }
+  return success;
+}
+
+void TetrisGame::DropPiece() {
+  while(MoveDown()) {
+    /////////////////////////////
   }
 }
 

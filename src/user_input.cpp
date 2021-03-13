@@ -28,6 +28,7 @@ void HandleKeyDown(SDL_Keycode key) {
             break;
         case SDLK_SPACE:
             std::cout << "Hard Drop" << std::endl;
+            current_game->DropPiece();
             break;
         case SDLK_LCTRL:
         case SDLK_RCTRL:

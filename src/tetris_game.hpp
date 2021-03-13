@@ -21,7 +21,8 @@ class TetrisGame {
     void Render();
     void MoveLeft();
     void MoveRight();
-    void MoveDown();
+    bool MoveDown();
+    void DropPiece();
     void RotateClockwise();
     void RotateCounterClockwise();
   private: 
