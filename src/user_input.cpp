@@ -32,7 +32,6 @@ void HandleKeyDown(SDL_Keycode key) {
       std::cout << "Hold piece" << std::endl;
       break;
     case SDLK_ESCAPE:
-      std::cout << "Pause game" << std::endl;
       current_game->Pause();
       break;
     }

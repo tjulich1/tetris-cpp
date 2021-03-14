@@ -44,37 +44,31 @@ void TetrisGame::StartGame() {
 
 	while (!quit) {
 		while (SDL_PollEvent(&e)) { 
+      SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
+      SDL_RenderClear(renderer_);
 			// Exit game if exit command is given.
 			if (e.type == SDL_QUIT) {
 				quit = true;
       // Ensure that the game is not paused.
 			} else if (!paused_) {
-        if (e.type == SDL_USEREVENT) {
-				  if (e.user.code == DROP) {
-            MoveDown();
-          }
+        // This event is fired from the game timer every tick
+        if (e.type == SDL_USEREVENT && e.user.code == DROP) {				
+          MoveDown();          
 			  } else {
           HandleUserInput(e);
         }
-        SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
-		    SDL_RenderClear(renderer_);
 		    Render();
-		    SDL_RenderPresent(renderer_);
       // If the game IS paused
-      } else {
-        // Only handle button pressed to unpause the game.
-        SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
-        SDL_RenderClear(renderer_);
+      } else {        
         RenderPause();
-        SDL_RenderPresent(renderer_);
+        // Only handle button pressed to unpause the game.
         if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
           paused_ = false;
         }
       }
+      SDL_RenderPresent(renderer_);
     } 
-    
 	}
-
 }
 
 /*
@@ -92,7 +86,7 @@ void TetrisGame::InitColorMap() {
 }
 
 void TetrisGame::RenderPause() {
-  
+
 }
 
 void TetrisGame::Render() {
