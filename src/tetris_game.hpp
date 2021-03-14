@@ -19,7 +19,7 @@ class TetrisGame {
     TetrisGame(SDL_Renderer* p_renderer);
 
     void StartGame();
-    void Render();
+    
 
     // Methods used to modify the current piece.
     void MoveLeft();
@@ -38,7 +38,8 @@ class TetrisGame {
     std::map<char, SDL_Color> block_color_map_;
 
     bool paused_;
-
+    void Render();
+    void RenderPause();
     unsigned int timer_interval_;
 
     bool IsPieceInBounds(PieceState p_state_to_check, int p_row_transform, int p_col_transform);

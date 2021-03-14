@@ -56,19 +56,25 @@ void TetrisGame::StartGame() {
 			  } else {
           HandleUserInput(e);
         }
+        SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
+		    SDL_RenderClear(renderer_);
+		    Render();
+		    SDL_RenderPresent(renderer_);
       // If the game IS paused
       } else {
         // Only handle button pressed to unpause the game.
+        SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
+        SDL_RenderClear(renderer_);
+        RenderPause();
+        SDL_RenderPresent(renderer_);
         if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
           paused_ = false;
         }
       }
     } 
-    SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
-		SDL_RenderClear(renderer_);
-		Render();
-		SDL_RenderPresent(renderer_);
+    
 	}
+
 }
 
 /*
@@ -83,6 +89,10 @@ void TetrisGame::InitColorMap() {
   block_color_map_.insert({'z', SDL_Color{255, 50, 19}});
   block_color_map_.insert({'t', SDL_Color{128, 77, 198}});
   block_color_map_.insert({'i', SDL_Color{27, 222, 228}});
+}
+
+void TetrisGame::RenderPause() {
+  
 }
 
 void TetrisGame::Render() {
