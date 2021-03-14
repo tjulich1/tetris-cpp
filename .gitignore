@@ -1,7 +1,7 @@
 Tetris.exe
-lib/
-include/
+/lib
+/include
 libfreetype-6.dll
-SDL_ttf.dll
-SDLL2.dll
+SDL2_ttf.dll
+SDL2.dll
 zlib1.dll
