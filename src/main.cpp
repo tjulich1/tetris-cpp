@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 //Screen dimension constants
 const int kWindowWidth = 201;
@@ -21,26 +22,34 @@ int main( int argc, char* args[] )
 		std::cout << "SDL Error: " << SDL_GetError() << std::endl;
 	}
 	else {
-		window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+		std::cout << "Not even here" << std::endl;
+		// Check if initializing SDL_ttf fails.
+		if (TTF_Init() == -1) {
+			std::cout << "Failed to initialize SDL_ttf: " << TTF_GetError() << std::endl;
+		} else {
+			std::cout << "Here?" << std::endl;
+			window = SDL_CreateWindow( "Tetris", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 		  kWindowWidth, kWindowHeight, SDL_WINDOW_SHOWN );
 
-		if (window == NULL) {
-			std::cout << "Window could not be created: " <<  SDL_GetError() << std::endl;
-		} else {
-			// Renderer for graphics.
-			SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+			if (window == NULL) {
+				std::cout << "Window could not be created: " <<  SDL_GetError() << std::endl;
+			} else {
+				// Renderer for graphics.
+				SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-			// Create new instance of game, using renderer.
-		  current_game = new TetrisGame(renderer);
+				// Create new instance of game, using renderer.
+		  	current_game = new TetrisGame(renderer);
 
-			// This call starts the game loop, and only returns when user ends game.
-			current_game->StartGame();
+				// This call starts the game loop, and only returns when user ends game.
+				current_game->StartGame();
 
-			// Clean up current game
-			delete current_game;
-			current_game = nullptr;	
+				// Clean up current game
+				delete current_game;
+				current_game = nullptr;	
 
-			SDL_DestroyRenderer(renderer);
+				SDL_DestroyRenderer(renderer);
+			}
+		
 		}
 	}
 	SDL_DestroyWindow( window );

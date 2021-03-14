@@ -7,6 +7,7 @@
 #include "tetris_board.hpp"
 #include <map>
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 const int kBlockDim = 20;
 const static int ROWS = 20;
@@ -17,6 +18,7 @@ unsigned int Tick(unsigned int p_interval, void* p);
 class TetrisGame {
   public:
     TetrisGame(SDL_Renderer* p_renderer);
+    ~TetrisGame();
 
     void StartGame();
     
@@ -31,11 +33,14 @@ class TetrisGame {
 
     void Pause();
   private: 
+
     PieceGenerator generator_;
     TetrisBoard board_;
     TetrisPiece current_piece_;
     SDL_Renderer* renderer_; 
     std::map<char, SDL_Color> block_color_map_;
+    TTF_Font* font_;
+    SDL_Texture* pause_message_;
 
     bool paused_;
     void Render();
