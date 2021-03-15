@@ -6,13 +6,13 @@
 TetrisPiece::TetrisPiece(const std::vector<PieceState> p_states) {
   current_state_ = 0;
   states_ = p_states;
-  row_ = 0;
+  row_ = -states_[0].height;
   col_ = 0;
 }
 
 TetrisPiece::TetrisPiece() {
   current_state_ = -1;
-  row_ = 0;
+  row_ = -2;
   col_ = 0;
 }
 

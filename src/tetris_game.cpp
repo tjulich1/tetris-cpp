@@ -34,7 +34,8 @@ TetrisGame::TetrisGame(SDL_Renderer* p_renderer) {
   renderer_ = p_renderer;
   InitColorMap();
   current_piece_ = generator_.GetPiece();
-  font_ = TTF_OpenFont("OpenSans-Regular.ttf", 24);
+
+  font_ = TTF_OpenFont("OpenSans-Regular.ttf", 40);
   SDL_Surface* surface_message = TTF_RenderText_Solid(font_, "Pause", {0,0,0});
   pause_message_ = SDL_CreateTextureFromSurface(renderer_, surface_message);
   SDL_FreeSurface(surface_message);
@@ -100,12 +101,9 @@ void TetrisGame::RenderPause() {
 
   SDL_Color black = {0, 0, 0};
 
-  SDL_Rect message_rect{0, 0, 100, 100};
+  SDL_Rect message_rect{0, 0, 200, 120};
 
   SDL_RenderCopy(renderer_, pause_message_, NULL, &message_rect);
-
-  
-  
 
 }
 
