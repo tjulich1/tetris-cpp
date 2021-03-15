@@ -22,7 +22,6 @@ class TetrisGame {
 
     void StartGame();
     
-
     // Methods used to modify the current piece.
     void MoveLeft();
     void MoveRight();

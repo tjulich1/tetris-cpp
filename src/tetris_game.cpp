@@ -59,6 +59,7 @@ void TetrisGame::StartGame() {
       SDL_RenderClear(renderer_);
 			// Exit game if exit command is given.
 			if (e.type == SDL_QUIT) {
+        std::cout << "Quit event popped" << std::endl;
 				quit = true;
       // Ensure that the game is not paused.
 			} else if (!paused_) {
@@ -177,6 +178,15 @@ void TetrisGame::NextPiece() {
 
   // Then spawn a new piece
   current_piece_ = generator_.GetPiece();
+
+  // Check to ensure that the new piece can at least move down once, or else end the game.
+  bool should_continue_game = IsLegalMove(CURRENT_STATE, 1, 0);
+  if (!should_continue_game) {
+    SDL_Event e;
+    e.type = SDL_QUIT;
+    SDL_PushEvent(&e);
+    std::cout << "Pushed quit event" << std::endl;
+  }
 }
 
 void TetrisGame::Pause() {

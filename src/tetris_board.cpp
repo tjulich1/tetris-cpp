@@ -56,7 +56,9 @@ bool TetrisBoard::IsBlockFilled(int p_row, int p_col) {
 }
 
 void TetrisBoard::SetBlock(int p_row, int p_col, char p_block_type) {
-  blocks_[p_row][p_col] = p_block_type;
+  if (p_row >= 0 && p_col >= 0) {
+    blocks_[p_row][p_col] = p_block_type;
+  }
 }
 
 void TetrisBoard::PrintBoard() {
