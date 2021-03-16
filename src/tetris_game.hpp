@@ -16,6 +16,12 @@ const static int COLS = 10;
 
 unsigned int Tick(unsigned int p_interval, void* p);
 
+enum StateCode {
+  CURRENT_STATE,
+  CLOCKWISE_STATE,
+  COUNTER_CLOCKWISE_STATE
+};
+
 class TetrisGame {
   public:
     TetrisGame(SDL_Renderer* p_renderer);
@@ -30,6 +36,7 @@ class TetrisGame {
     void DropPiece();
     void RotateClockwise();
     void RotateCounterClockwise();
+
     void Render();
     void TogglePause();
     bool IsPaused();
@@ -50,11 +57,10 @@ class TetrisGame {
 
     bool IsPieceInBounds(PieceState p_state_to_check, int p_row_transform, int p_col_transform);
     bool CheckCollisions(PieceState p_state_to_check, int p_row_transform, int p_col_transform);
-    bool IsLegalMove(int p_state_number, int p_row_transform, int p_col_transform);
+    bool IsLegalMove(StateCode p_state_code, int p_row_transform, int p_col_transform);
     
     void LockPiece();
     void NextPiece();
-    bool IsClockwiseClear();
     void InitColorMap();
 };
 

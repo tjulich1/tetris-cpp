@@ -4,6 +4,7 @@
 #define TETRIS_BOARD_H
 
 #include <vector>
+#include "tetris_piece.hpp"
 
 class TetrisBoard {
   public:
@@ -16,6 +17,7 @@ class TetrisBoard {
     void ClearRows();
     int get_rows();
     int get_cols();
+    void LockPiece(TetrisPiece p_piece);
   private:
     std::vector<std::vector<char>> blocks_;
     int rows_ = 20;

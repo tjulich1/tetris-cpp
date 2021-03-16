@@ -4,11 +4,7 @@
 #include "block.hpp"
 #include <iostream>
 
-enum StateCodes {
-  CURRENT_STATE,
-  CLOCKWISE_STATE,
-  COUNTER_CLOCKWISE_STATE
-};
+
 
 TetrisGame::TetrisGame(SDL_Renderer* p_renderer) {
   renderer_ = p_renderer;
@@ -61,11 +57,8 @@ void TetrisGame::Render() {
   } else {
     // Draw board perimeter
     SDL_SetRenderDrawColor(renderer_, 255, 0, 0, 255);
-    SDL_RenderDrawLine(renderer_, 0, kBlockDim*board_.get_rows(),
-      kBlockDim*board_.get_cols(), kBlockDim*board_.get_rows());
-    SDL_RenderDrawLine(renderer_, kBlockDim*board_.get_cols(), 0, 
-      kBlockDim*board_.get_cols(), kBlockDim*board_.get_rows());
-    SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
+    SDL_RenderDrawLine(renderer_, 0, kBlockDim*rows, kBlockDim*cols, kBlockDim*rows);
+    SDL_RenderDrawLine(renderer_, kBlockDim*cols, 0, kBlockDim*cols, kBlockDim*rows);
 
     // Draw board
     SDL_Color block_color;
@@ -83,7 +76,6 @@ void TetrisGame::Render() {
           SDL_RenderFillRect(renderer_, &rect);
         }
       }
-      
     }
 
     PieceState cur_state = current_piece_.get_current_state();
@@ -108,7 +100,7 @@ void TetrisGame::Render() {
 
 void TetrisGame::NextPiece() {
   // Lock the current piece into the board.
-  LockPiece();
+  board_.LockPiece(current_piece_);
 
   // Clear any rows that are completed.
   board_.ClearRows();
@@ -172,22 +164,6 @@ void TetrisGame::RotateCounterClockwise() {
   }
 }
 
-void TetrisGame::LockPiece() {
-  // Grab the current state of the piece to lock.
-  PieceState current_state = current_piece_.get_current_state();
-  for (int i = 0; i < current_state.blocks.size(); i++) {
-    // Grab the first block of the piece state.
-    Block current_block = current_state.blocks[i];
-    
-    // Find the actual (x, y) coords of the current block on the board.
-    int current_block_global_x = current_block.x + current_piece_.get_col();
-    int current_block_global_y = current_block.y + current_piece_.get_row();
-    
-    // Update the board and mark where current block is.
-    board_.SetBlock(current_block_global_y, current_block_global_x, current_block.block_code);
-  }
-}
-
 bool TetrisGame::IsPieceInBounds(PieceState p_state_to_check, int p_row_transform, int p_col_transform) {
   bool in_bounds = true;
   Block current_block;
@@ -197,6 +173,7 @@ bool TetrisGame::IsPieceInBounds(PieceState p_state_to_check, int p_row_transfor
     int col = current_piece_.get_col() + current_block.x + p_col_transform;
     if (row >= board_.get_rows() || col >= board_.get_cols() || col < 0) {
       in_bounds = false;
+      break;
     }
   }
   return in_bounds;
@@ -217,10 +194,10 @@ bool TetrisGame::CheckCollisions(PieceState p_state_to_check, int p_row_transfor
   return collisions;
 }
 
-bool TetrisGame::IsLegalMove(int p_state_number, int p_row_transform, int p_col_transform) {
+bool TetrisGame::IsLegalMove(StateCode p_state_code, int p_row_transform, int p_col_transform) {
   bool legal = true;
   PieceState state;
-  switch (p_state_number) {
+  switch (p_state_code) {
     case CURRENT_STATE:
       state = current_piece_.get_current_state();
       break;

@@ -17,6 +17,15 @@ TetrisBoard::~TetrisBoard() {
 
 }
 
+void TetrisBoard::LockPiece(TetrisPiece p_piece) {
+  std::vector<Block> blocks = p_piece.get_current_state().blocks;
+  for (int i = 0; i < blocks.size(); i++) {
+    int row = p_piece.get_row() + blocks[i].y;
+    int col = p_piece.get_col() + blocks[i].x;
+    blocks_[row][col] = blocks[i].block_code;
+  }
+}
+
 void TetrisBoard::ClearRows() {
   std::vector<char> current_row;
   bool should_clear = true;
