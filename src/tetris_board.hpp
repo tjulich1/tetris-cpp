@@ -4,11 +4,13 @@
 #define TETRIS_BOARD_H
 
 #include <vector>
+#include <map>
 #include "tetris_piece.hpp"
+#include <SDL.h>
 
 class TetrisBoard {
   public:
-    TetrisBoard();
+    TetrisBoard(int p_x_offset = 0, int p_y_offset = 0, int p_block_dim = 10);
     ~TetrisBoard();
     void PrintBoard();
     bool IsBlockFilled(int p_row, int p_col);
@@ -18,10 +20,14 @@ class TetrisBoard {
     int get_rows();
     int get_cols();
     void LockPiece(TetrisPiece p_piece);
+    void Render(SDL_Renderer* p_renderer, std::map<char, SDL_Color>* p_colors);
   private:
     std::vector<std::vector<char>> blocks_;
-    int rows_ = 20;
-    int cols_ = 10;
+    int rows_;
+    int cols_;
+    int x_offset_;
+    int y_offset_;
+    int block_dim_;
 };
 
 #endif

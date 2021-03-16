@@ -6,6 +6,7 @@
 #include "piece_generator.hpp"
 #include "tetris_board.hpp"
 #include "tetris_piece.hpp"
+
 #include <map>
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -46,7 +47,7 @@ class TetrisGame {
     TetrisBoard board_;
     TetrisPiece current_piece_;
     SDL_Renderer* renderer_; 
-    std::map<char, SDL_Color> block_color_map_;
+    std::map<char, SDL_Color>* block_color_map_;
     TTF_Font* font_;
     SDL_Texture* pause_message_;
 

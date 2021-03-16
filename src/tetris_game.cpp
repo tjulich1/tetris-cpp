@@ -2,12 +2,16 @@
 
 #include "tetris_game.hpp"
 #include "block.hpp"
+
 #include <iostream>
 
-
+int x_offset = 50;
+int y_offset = 50;
 
 TetrisGame::TetrisGame(SDL_Renderer* p_renderer) {
+  board_ = TetrisBoard(x_offset, y_offset, kBlockDim);
   renderer_ = p_renderer;
+  block_color_map_ = new std::map<char, SDL_Color>();
   InitColorMap();
   current_piece_ = generator_.GetPiece();
 
@@ -21,6 +25,7 @@ TetrisGame::TetrisGame(SDL_Renderer* p_renderer) {
 TetrisGame::~TetrisGame() {
   SDL_DestroyTexture(pause_message_);
   TTF_CloseFont(font_);
+  delete block_color_map_;
 }
 
 /*
@@ -28,13 +33,14 @@ TetrisGame::~TetrisGame() {
   that can appear on the game board.
 */
 void TetrisGame::InitColorMap() {
-  block_color_map_.insert({'j', SDL_Color{3, 65, 174}});
-  block_color_map_.insert({'s', SDL_Color{114, 203, 59}});
-  block_color_map_.insert({'o', SDL_Color{255, 213, 0}});
-  block_color_map_.insert({'l', SDL_Color{255, 151, 28}});
-  block_color_map_.insert({'z', SDL_Color{255, 50, 19}});
-  block_color_map_.insert({'t', SDL_Color{128, 77, 198}});
-  block_color_map_.insert({'i', SDL_Color{27, 222, 228}});
+
+  block_color_map_->insert({'j', SDL_Color{3, 65, 174}});
+  block_color_map_->insert({'s', SDL_Color{114, 203, 59}});
+  block_color_map_->insert({'o', SDL_Color{255, 213, 0}});
+  block_color_map_->insert({'l', SDL_Color{255, 151, 28}});
+  block_color_map_->insert({'z', SDL_Color{255, 50, 19}});
+  block_color_map_->insert({'t', SDL_Color{128, 77, 198}});
+  block_color_map_->insert({'i', SDL_Color{27, 222, 228}});
 }
 
 void TetrisGame::RenderPause() {
@@ -56,39 +62,19 @@ void TetrisGame::Render() {
     RenderPause();
   } else {
     // Draw board perimeter
-    SDL_SetRenderDrawColor(renderer_, 255, 0, 0, 255);
-    SDL_RenderDrawLine(renderer_, 0, kBlockDim*rows, kBlockDim*cols, kBlockDim*rows);
-    SDL_RenderDrawLine(renderer_, kBlockDim*cols, 0, kBlockDim*cols, kBlockDim*rows);
-
-    // Draw board
-    SDL_Color block_color;
-    for (int i = 0; i < rows; i++) {
-      for(int j = 0; j < cols; j++) {
-        if (board_.IsBlockFilled(i, j)) {
-          block_color = block_color_map_.find(board_.GetBlock(i, j))->second;
-          SDL_SetRenderDrawColor(renderer_, block_color.r, block_color.g, block_color.b, 255);
-          rect = {
-            j*kBlockDim,
-            i*kBlockDim,
-            kBlockDim,
-            kBlockDim
-          };
-          SDL_RenderFillRect(renderer_, &rect);
-        }
-      }
-    }
+    board_.Render(renderer_, block_color_map_);
 
     PieceState cur_state = current_piece_.get_current_state();
     // Lookup the color of the current piece.
-    block_color = block_color_map_.find(cur_state.blocks[0].block_code)->second;
+    SDL_Color block_color = block_color_map_->find(cur_state.blocks[0].block_code)->second;
     SDL_SetRenderDrawColor(renderer_, block_color.r, block_color.g, block_color.b, 255);
 
     // Draw each of the blocks of the current piece.
     for (int i = 0; i < cur_state.blocks.size(); i++) {
       Block current_block = cur_state.blocks[i];
       rect = {
-        (current_piece_.get_col()+current_block.x)*kBlockDim,
-        (current_piece_.get_row()+current_block.y)*kBlockDim,
+        x_offset + (current_piece_.get_col()+current_block.x)*kBlockDim,
+        y_offset + (current_piece_.get_row()+current_block.y)*kBlockDim,
         kBlockDim,
         kBlockDim
       };
