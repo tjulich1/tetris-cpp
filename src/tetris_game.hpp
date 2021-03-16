@@ -5,6 +5,7 @@
 
 #include "piece_generator.hpp"
 #include "tetris_board.hpp"
+#include "tetris_piece.hpp"
 #include <map>
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -29,8 +30,9 @@ class TetrisGame {
     void DropPiece();
     void RotateClockwise();
     void RotateCounterClockwise();
-
-    void Pause();
+    void Render();
+    void TogglePause();
+    bool IsPaused();
   private: 
 
     PieceGenerator generator_;
@@ -42,7 +44,7 @@ class TetrisGame {
     SDL_Texture* pause_message_;
 
     bool paused_;
-    void Render();
+    
     void RenderPause();
     unsigned int timer_interval_;
 

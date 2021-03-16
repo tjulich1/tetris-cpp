@@ -1,17 +1,32 @@
 // Trent Julich ~ 03/02/2021
 
 #include "tetris_game.hpp"
-#include "user_input.hpp"
+#include "tetris_input.hpp"
+#include "tetris_events.hpp"
 
 #include <iostream>
 #include <SDL.h>
 #include <SDL_ttf.h>
 
 //Screen dimension constants
-const int kWindowWidth = 201;
-const int kWindowHeight = 401;
+const int kWindowWidth = 300;
+const int kWindowHeight = 500;
 
 TetrisGame* current_game;
+
+unsigned int Tick(unsigned int p_interval, void* p_params) {
+  std::cout << "Game Tick" << std::endl;
+  SDL_Event drop_event;
+  SDL_UserEvent drop_user_event;
+  drop_user_event.type = SDL_USEREVENT;
+  drop_user_event.code = DROP;
+  drop_event.type = SDL_USEREVENT;
+  drop_event.user = drop_user_event;
+
+  SDL_PushEvent(&drop_event);
+
+  return p_interval;
+}
 
 int main( int argc, char* args[] )
 {
@@ -37,11 +52,18 @@ int main( int argc, char* args[] )
 				// Renderer for graphics.
 				SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
+				SDL_TimerID timer = SDL_AddTimer(3000, Tick, NULL);
+
 				// Create new instance of game, using renderer.
 		  	current_game = new TetrisGame(renderer);
 
-				// This call starts the game loop, and only returns when user ends game.
-				current_game->StartGame();
+				TetrisInput user_input(current_game);
+
+				bool quit = false;
+				while (!quit) {
+					quit = user_input.HandleInput();
+					current_game->Render();	
+				}
 
 				// Clean up current game
 				delete current_game;

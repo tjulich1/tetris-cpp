@@ -1,34 +1,14 @@
 // Trent Julich ~ 03/02/2021
 
 #include "tetris_game.hpp"
-#include "user_input.hpp"
 #include "block.hpp"
 #include <iostream>
-
-
-enum UserEventCodes {
-  DROP,
-};
 
 enum StateCodes {
   CURRENT_STATE,
   CLOCKWISE_STATE,
   COUNTER_CLOCKWISE_STATE
 };
-
-unsigned int Tick(unsigned int p_interval, void* p_params) {
-  std::cout << "Game Tick" << std::endl;
-  SDL_Event drop_event;
-  SDL_UserEvent drop_user_event;
-  drop_user_event.type = SDL_USEREVENT;
-  drop_user_event.code = DROP;
-  drop_event.type = SDL_USEREVENT;
-  drop_event.user = drop_user_event;
-
-  SDL_PushEvent(&drop_event);
-
-  return p_interval;
-}
 
 TetrisGame::TetrisGame(SDL_Renderer* p_renderer) {
   renderer_ = p_renderer;
@@ -47,42 +27,6 @@ TetrisGame::~TetrisGame() {
   TTF_CloseFont(font_);
 }
 
-// Main Tetris game loop.
-void TetrisGame::StartGame() {
-  SDL_Event e;
-  bool quit = false;
-  SDL_TimerID timer = SDL_AddTimer(3000, Tick, NULL);
-
-	while (!quit) {
-		while (SDL_PollEvent(&e)) { 
-      SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
-      SDL_RenderClear(renderer_);
-			// Exit game if exit command is given.
-			if (e.type == SDL_QUIT) {
-        std::cout << "Quit event popped" << std::endl;
-				quit = true;
-      // Ensure that the game is not paused.
-			} else if (!paused_) {
-        // This event is fired from the game timer every tick
-        if (e.type == SDL_USEREVENT && e.user.code == DROP) {				
-          MoveDown();          
-			  } else {
-          HandleUserInput(e);
-        }
-		    Render();
-      // If the game IS paused
-      } else {        
-        RenderPause();
-        // Only handle button pressed to unpause the game.
-        if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
-          paused_ = false;
-        }
-      }
-      SDL_RenderPresent(renderer_);
-    } 
-	}
-}
-
 /*
   Initializes map with characters mapping to RGB colors. Each char corresponds to a type of block 
   that can appear on the game board.
@@ -98,75 +42,68 @@ void TetrisGame::InitColorMap() {
 }
 
 void TetrisGame::RenderPause() {
-
-
   SDL_Color black = {0, 0, 0};
-
   SDL_Rect message_rect{0, 0, 200, 120};
-
   SDL_RenderCopy(renderer_, pause_message_, NULL, &message_rect);
-
 }
 
 void TetrisGame::Render() {
-  int current_r;
-  int current_g;
-  int current_b;
-
   int rows = board_.get_rows();
   int cols = board_.get_cols();
 
   SDL_Rect rect;
 
-  // Draw board perimeter
-  SDL_SetRenderDrawColor(renderer_, 255, 0, 0, 255);
-  SDL_RenderDrawLine(renderer_, 0, kBlockDim*board_.get_rows(),
-    kBlockDim*board_.get_cols(), kBlockDim*board_.get_rows());
-  SDL_RenderDrawLine(renderer_, kBlockDim*board_.get_cols(), 0, 
-    kBlockDim*board_.get_cols(), kBlockDim*board_.get_rows());
-  SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
+  SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
+  SDL_RenderClear(renderer_);
 
-  // Draw board
-  SDL_Color block_color;
-  for (int i = 0; i < rows; i++) {
-    for(int j = 0; j < cols; j++) {
-      if (board_.IsBlockFilled(i, j)) {
-        block_color = block_color_map_.find(board_.GetBlock(i, j))->second;
-        current_r = block_color.r;
-        current_g = block_color.g;
-        current_b = block_color.b;
-        SDL_SetRenderDrawColor(renderer_, current_r, current_g, current_b, 255);
-        rect = {
-          j*kBlockDim,
-          i*kBlockDim,
-          kBlockDim,
-          kBlockDim
-        };
-        SDL_RenderFillRect(renderer_, &rect);
+  if (paused_) {
+    RenderPause();
+  } else {
+    // Draw board perimeter
+    SDL_SetRenderDrawColor(renderer_, 255, 0, 0, 255);
+    SDL_RenderDrawLine(renderer_, 0, kBlockDim*board_.get_rows(),
+      kBlockDim*board_.get_cols(), kBlockDim*board_.get_rows());
+    SDL_RenderDrawLine(renderer_, kBlockDim*board_.get_cols(), 0, 
+      kBlockDim*board_.get_cols(), kBlockDim*board_.get_rows());
+    SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
+
+    // Draw board
+    SDL_Color block_color;
+    for (int i = 0; i < rows; i++) {
+      for(int j = 0; j < cols; j++) {
+        if (board_.IsBlockFilled(i, j)) {
+          block_color = block_color_map_.find(board_.GetBlock(i, j))->second;
+          SDL_SetRenderDrawColor(renderer_, block_color.r, block_color.g, block_color.b, 255);
+          rect = {
+            j*kBlockDim,
+            i*kBlockDim,
+            kBlockDim,
+            kBlockDim
+          };
+          SDL_RenderFillRect(renderer_, &rect);
+        }
       }
+      
+    }
+
+    PieceState cur_state = current_piece_.get_current_state();
+    // Lookup the color of the current piece.
+    block_color = block_color_map_.find(cur_state.blocks[0].block_code)->second;
+    SDL_SetRenderDrawColor(renderer_, block_color.r, block_color.g, block_color.b, 255);
+
+    // Draw each of the blocks of the current piece.
+    for (int i = 0; i < cur_state.blocks.size(); i++) {
+      Block current_block = cur_state.blocks[i];
+      rect = {
+        (current_piece_.get_col()+current_block.x)*kBlockDim,
+        (current_piece_.get_row()+current_block.y)*kBlockDim,
+        kBlockDim,
+        kBlockDim
+      };
+      SDL_RenderFillRect(renderer_, &rect);
     }
   }
-
-  PieceState cur_state = current_piece_.get_current_state();
-
-  // Lookup the color of the current piece.
-  block_color = block_color_map_.find(cur_state.blocks[0].block_code)->second;
-  current_r = block_color.r;
-  current_g = block_color.g;
-  current_b = block_color.b;
-  SDL_SetRenderDrawColor(renderer_, current_r, current_g, current_b, 255);
-
-  // Draw each of the blocks of the current piece.
-  for (int i = 0; i < cur_state.blocks.size(); i++) {
-    Block current_block = cur_state.blocks[i];
-    rect = {
-      (current_piece_.get_col()+current_block.x)*kBlockDim,
-      (current_piece_.get_row()+current_block.y)*kBlockDim,
-      kBlockDim,
-      kBlockDim
-    };
-    SDL_RenderFillRect(renderer_, &rect);
-  }
+  SDL_RenderPresent(renderer_);
 }
 
 void TetrisGame::NextPiece() {
@@ -185,12 +122,15 @@ void TetrisGame::NextPiece() {
     SDL_Event e;
     e.type = SDL_QUIT;
     SDL_PushEvent(&e);
-    std::cout << "Pushed quit event" << std::endl;
   }
 }
 
-void TetrisGame::Pause() {
-  paused_ = true;
+void TetrisGame::TogglePause() {
+  paused_ = !paused_;
+}
+
+bool TetrisGame::IsPaused() {
+  return paused_;
 }
 
 bool TetrisGame::MoveDown() {
