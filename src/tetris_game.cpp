@@ -8,9 +8,8 @@
 int x_offset = 50;
 int y_offset = 50;
 
-TetrisGame::TetrisGame(SDL_Renderer* p_renderer) {
+TetrisGame::TetrisGame(SDL_Renderer* p_renderer) : renderer_(p_renderer) {
   board_ = TetrisBoard(x_offset, y_offset, kBlockDim);
-  renderer_ = p_renderer;
   block_color_map_ = new std::map<char, SDL_Color>();
   InitColorMap();
   current_piece_ = generator_.GetPiece();
@@ -66,7 +65,7 @@ void TetrisGame::Render() {
 
     PieceState cur_state = current_piece_.get_current_state();
     // Lookup the color of the current piece.
-    SDL_Color block_color = block_color_map_->find(cur_state.blocks[0].block_code)->second;
+    SDL_Color block_color = block_color_map_->find(current_piece_.get_type())->second;
     SDL_SetRenderDrawColor(renderer_, block_color.r, block_color.g, block_color.b, 255);
 
     // Draw each of the blocks of the current piece.

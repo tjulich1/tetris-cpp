@@ -14,7 +14,7 @@ struct PieceState {
 
 class TetrisPiece {
   public: 
-    TetrisPiece(const std::vector<PieceState> p_states);
+    TetrisPiece(const std::vector<PieceState> p_states, char p_piece_type);
     TetrisPiece();
   
     void Right();
@@ -28,11 +28,13 @@ class TetrisPiece {
     PieceState get_prev_state();
     int get_row();
     int get_col();
+    char get_type();
   private:
     int row_;
     int col_;
     std::vector<PieceState> states_;
     int current_state_;
+    char piece_type_;
 };
 
 #endif

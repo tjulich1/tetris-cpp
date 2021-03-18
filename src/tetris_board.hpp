@@ -11,10 +11,7 @@
 class TetrisBoard {
   public:
     TetrisBoard(int p_x_offset = 0, int p_y_offset = 0, int p_block_dim = 10);
-    ~TetrisBoard();
-    void PrintBoard();
     bool IsBlockFilled(int p_row, int p_col);
-    void SetBlock(int p_row, int p_col, char p_block_type);
     char GetBlock(int p_row, int p_col);
     void ClearRows();
     int get_rows();

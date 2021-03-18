@@ -6,7 +6,6 @@
 struct Block {
   int x;
   int y;
-  char block_code;
 };
 
 #endif

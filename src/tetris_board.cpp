@@ -3,21 +3,13 @@
 #include "tetris_board.hpp"
 #include <iostream>
 
-TetrisBoard::TetrisBoard(int p_x_offset, int p_y_offset, int p_block_dim) {
-  rows_ = 20;
-  cols_ = 10;
-  x_offset_ = p_x_offset;
-  y_offset_ = p_y_offset;
-  block_dim_ = p_block_dim;
+TetrisBoard::TetrisBoard(int p_x_offset, int p_y_offset, int p_block_dim) 
+  : rows_(20), cols_(10), x_offset_(p_x_offset), y_offset_(p_y_offset), block_dim_(p_block_dim) { 
   std::vector<char> empty_row(cols_);
   std::vector<std::vector<char>> all_rows(rows_);
   std::fill(empty_row.begin(), empty_row.end(), '-');
   std::fill(all_rows.begin(), all_rows.end(), empty_row);
   blocks_ = all_rows;
-}
-
-TetrisBoard::~TetrisBoard() {
-
 }
 
 void TetrisBoard::LockPiece(TetrisPiece p_piece) {
@@ -26,7 +18,7 @@ void TetrisBoard::LockPiece(TetrisPiece p_piece) {
     int row = p_piece.get_row() + blocks[i].y;
     int col = p_piece.get_col() + blocks[i].x;
     if (row >= 0) {
-      blocks_[row][col] = blocks[i].block_code;
+      blocks_[row][col] = p_piece.get_type();
     }
   }
 }
@@ -69,14 +61,7 @@ bool TetrisBoard::IsBlockFilled(int p_row, int p_col) {
     && !(blocks_[p_row][p_col] == '-'));
 }
 
-void TetrisBoard::SetBlock(int p_row, int p_col, char p_block_type) {
-  if (p_row >= 0 && p_col >= 0) {
-    blocks_[p_row][p_col] = p_block_type; 
-  }
-}
-
 void TetrisBoard::Render(SDL_Renderer* p_renderer, std::map<char, SDL_Color>* p_colors) {
-  
   // Draw the perimeter of the board
   SDL_Rect rect{
     x_offset_ - 1, 
@@ -105,19 +90,5 @@ void TetrisBoard::Render(SDL_Renderer* p_renderer, std::map<char, SDL_Color>* p_
         SDL_RenderFillRect(p_renderer, &rect);
       }
     }
-  }
-
-}
-
-void TetrisBoard::PrintBoard() {
-  std::cout << "PRINTING BOARD" << std::endl;
-  for(int i = 0; i < blocks_.size(); i++) {
-    for(int j = 0; j < blocks_[i].size(); j++) {
-      std::cout << blocks_[i][j];
-      if (j != blocks_[i].size()-1) {
-        std::cout << ",";
-      }
-    }
-    std::cout << std::endl;
   }
 }

@@ -2,11 +2,9 @@
 #include "tetris_events.hpp"
 #include <iostream>
 
-TetrisInput::TetrisInput(TetrisGame* game) {
-  game_ = game;
-}
+TetrisInput::TetrisInput(TetrisGame* game) : game_(game) { }
 
-TetrisInput::~TetrisInput() {
+TetrisInput::~TetrisInput() { 
   game_ = 0;
 }
 

@@ -3,18 +3,11 @@
 #include "tetris_piece.hpp"
 #include <iostream>
 
-TetrisPiece::TetrisPiece(const std::vector<PieceState> p_states) {
-  current_state_ = 0;
-  states_ = p_states;
-  row_ = -states_[0].height;
-  col_ = 4;
-}
+TetrisPiece::TetrisPiece(const std::vector<PieceState> p_states, char p_piece_type) 
+  : current_state_(0), states_(p_states), col_(4), row_(-p_states[0].height), 
+    piece_type_(p_piece_type) { }
 
-TetrisPiece::TetrisPiece() {
-  current_state_ = -1;
-  row_ = 0;
-  col_ = 0;
-}
+TetrisPiece::TetrisPiece() : current_state_(-1), row_(0), col_(0), piece_type_('-') { }
 
 PieceState TetrisPiece::get_current_state() {
   if (current_state_ != -1) {
@@ -62,4 +55,8 @@ int TetrisPiece::get_col() {
 
 int TetrisPiece::get_row() {
   return row_;
+}
+
+char TetrisPiece::get_type() {
+  return piece_type_;
 }
