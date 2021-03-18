@@ -28,7 +28,8 @@ class TetrisGame {
     TetrisGame(SDL_Renderer* p_renderer);
     ~TetrisGame();
 
-    void StartGame();
+    void Render();
+    bool IsPaused();
     
     // Methods used to modify the current piece.
     void MoveLeft();
@@ -37,18 +38,20 @@ class TetrisGame {
     void DropPiece();
     void RotateClockwise();
     void RotateCounterClockwise();
-
-    void Render();
     void TogglePause();
-    bool IsPaused();
+    void StartGame();
+
   private: 
 
+    SDL_Renderer* renderer_; 
+    TTF_Font* font_;
+    
     PieceGenerator generator_;
     TetrisBoard board_;
     TetrisPiece current_piece_;
-    SDL_Renderer* renderer_; 
+    
     std::map<char, SDL_Color>* block_color_map_;
-    TTF_Font* font_;
+    
     SDL_Texture* pause_message_;
 
     bool paused_;

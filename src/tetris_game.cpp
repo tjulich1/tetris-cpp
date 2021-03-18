@@ -60,7 +60,7 @@ void TetrisGame::Render() {
   if (paused_) {
     RenderPause();
   } else {
-    // Draw board perimeter
+    // Draw board
     board_.Render(renderer_, block_color_map_);
 
     PieceState cur_state = current_piece_.get_current_state();
@@ -187,10 +187,10 @@ bool TetrisGame::IsLegalMove(StateCode p_state_code, int p_row_transform, int p_
       state = current_piece_.get_current_state();
       break;
     case CLOCKWISE_STATE:
-      state = current_piece_.get_next_state();
+      state = current_piece_.get_clockwise_state();
       break;
     case COUNTER_CLOCKWISE_STATE:
-      state = current_piece_.get_prev_state();
+      state = current_piece_.get_counter_clockwise_state();
       break;
     default:
       state = current_piece_.get_current_state();

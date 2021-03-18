@@ -17,6 +17,7 @@ class TetrisPiece {
     TetrisPiece(const std::vector<PieceState> p_states, char p_piece_type);
     TetrisPiece();
   
+    // Transformations to Tetris Piece
     void Right();
     void Left();
     void Down();
@@ -24,8 +25,9 @@ class TetrisPiece {
     void CounterClockwise();
 
     PieceState get_current_state();
-    PieceState get_next_state();
-    PieceState get_prev_state();
+    PieceState get_clockwise_state();
+    PieceState get_counter_clockwise_state();
+
     int get_row();
     int get_col();
     char get_type();

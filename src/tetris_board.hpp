@@ -11,17 +11,22 @@
 class TetrisBoard {
   public:
     TetrisBoard(int p_x_offset = 0, int p_y_offset = 0, int p_block_dim = 10);
+    
+    void Render(SDL_Renderer* p_renderer, std::map<char, SDL_Color>* p_colors);
+    void ClearRows();
+    void LockPiece(TetrisPiece p_piece);
     bool IsBlockFilled(int p_row, int p_col);
     char GetBlock(int p_row, int p_col);
-    void ClearRows();
+        
     int get_rows();
     int get_cols();
-    void LockPiece(TetrisPiece p_piece);
-    void Render(SDL_Renderer* p_renderer, std::map<char, SDL_Color>* p_colors);
+    
   private:
     std::vector<std::vector<char>> blocks_;
     int rows_;
     int cols_;
+
+    // Values used for rendering
     int x_offset_;
     int y_offset_;
     int block_dim_;

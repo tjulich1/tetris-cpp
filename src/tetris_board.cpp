@@ -12,55 +12,6 @@ TetrisBoard::TetrisBoard(int p_x_offset, int p_y_offset, int p_block_dim)
   blocks_ = all_rows;
 }
 
-void TetrisBoard::LockPiece(TetrisPiece p_piece) {
-  std::vector<Block> blocks = p_piece.get_current_state().blocks;
-  for (int i = 0; i < blocks.size(); i++) {
-    int row = p_piece.get_row() + blocks[i].y;
-    int col = p_piece.get_col() + blocks[i].x;
-    if (row >= 0) {
-      blocks_[row][col] = p_piece.get_type();
-    }
-  }
-}
-
-void TetrisBoard::ClearRows() {
-  std::vector<char> current_row;
-  bool should_clear = true;
-  for (int i = 0; i < blocks_.size(); i++) {
-    current_row = blocks_[i];
-    for (int j = 0; j < current_row.size(); j++) {
-      if (current_row[j] == '-') {
-        should_clear = false;
-        break;
-      }
-    }
-    if (should_clear) {
-      std::vector<char> empty_row(cols_);
-      std::fill(empty_row.begin(), empty_row.end(), '-');
-      blocks_.erase(blocks_.begin() + i);
-      blocks_.insert(blocks_.begin(), empty_row);
-    }
-    should_clear = true;
-  }
-}
-
-char TetrisBoard::GetBlock(int p_row, int p_col) {
-  return blocks_[p_row][p_col];
-}
-
-int TetrisBoard::get_rows() {
-  return rows_;
-}
-
-int TetrisBoard::get_cols() {
-  return cols_;
-}
-
-bool TetrisBoard::IsBlockFilled(int p_row, int p_col) {
-  return (!(p_row < 0 || p_col < 0) 
-    && !(blocks_[p_row][p_col] == '-'));
-}
-
 void TetrisBoard::Render(SDL_Renderer* p_renderer, std::map<char, SDL_Color>* p_colors) {
   // Draw the perimeter of the board
   SDL_Rect rect{
@@ -91,4 +42,57 @@ void TetrisBoard::Render(SDL_Renderer* p_renderer, std::map<char, SDL_Color>* p_
       }
     }
   }
+}
+
+void TetrisBoard::ClearRows() {
+  std::vector<char> current_row;
+  bool should_clear = true;
+  for (int i = 0; i < blocks_.size(); i++) {
+    current_row = blocks_[i];
+    for (int j = 0; j < current_row.size(); j++) {
+      if (current_row[j] == '-') {
+        should_clear = false;
+        break;
+      }
+    }
+    if (should_clear) {
+      std::vector<char> empty_row(cols_);
+      std::fill(empty_row.begin(), empty_row.end(), '-');
+      blocks_.erase(blocks_.begin() + i);
+      blocks_.insert(blocks_.begin(), empty_row);
+    }
+    should_clear = true;
+  }
+}
+
+void TetrisBoard::LockPiece(TetrisPiece p_piece) {
+  std::vector<Block> blocks = p_piece.get_current_state().blocks;
+  for (int i = 0; i < blocks.size(); i++) {
+    int row = p_piece.get_row() + blocks[i].y;
+    int col = p_piece.get_col() + blocks[i].x;
+    if (row >= 0) {
+      blocks_[row][col] = p_piece.get_type();
+    }
+  }
+}
+
+
+
+bool TetrisBoard::IsBlockFilled(int p_row, int p_col) {
+  return (!(p_row < 0 || p_col < 0) 
+    && !(blocks_[p_row][p_col] == '-'));
+}
+
+
+
+char TetrisBoard::GetBlock(int p_row, int p_col) {
+  return blocks_[p_row][p_col];
+}
+
+int TetrisBoard::get_rows() {
+  return rows_;
+}
+
+int TetrisBoard::get_cols() {
+  return cols_;
 }

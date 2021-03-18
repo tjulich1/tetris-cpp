@@ -17,11 +17,11 @@ PieceState TetrisPiece::get_current_state() {
   }
 }
 
-PieceState TetrisPiece::get_next_state() {
+PieceState TetrisPiece::get_clockwise_state() {
   return states_[(current_state_+1)%states_.size()];
 }
 
-PieceState TetrisPiece::get_prev_state() {
+PieceState TetrisPiece::get_counter_clockwise_state() {
   return states_[(current_state_-1)%states_.size()];
 }
 
