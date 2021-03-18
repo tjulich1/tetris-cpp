@@ -1,3 +1,5 @@
+[![C/C++ CI](https://github.com/tjulich1/tetris-cpp/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/tjulich1/tetris-cpp/actions/workflows/c-cpp.yml)
+
 # Tetris Clone
 
 <img align="right" src="https://user-images.githubusercontent.com/33639246/111414167-bbe06e80-869c-11eb-9988-e00579d45473.JPG">
