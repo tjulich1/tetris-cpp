@@ -5,10 +5,10 @@ OBJS = ./src/*.cpp
 CC = g++
 
 # INCLUDE_PATHS specifies the additional include paths we will need
-INCLUDE_PATHS = -Iinclude
+INCLUDE_PATHS = -I/usr/include/SDL2
 
 # LIBRARY_PATHS specifies the additional library paths we'll need
-LIBRARY_PATHS = -Llib
+LIBRARY_PATHS = 
 
 # COMPILER_FLAGS specifies the additional compilation options we're using 
 # -w suppresses all warnings
