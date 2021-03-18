@@ -9,7 +9,7 @@ Current project state:
   - Ability to pause
   - Simple wall kicks
   - Basic rotation system
-  
+  - Game ends when new piece cannot spawn
 Future additions:
   - Main menu
   - Replay feature
@@ -17,4 +17,4 @@ Future additions:
   - Score
   - Improve rotation system
   - More advanced wall kicks
-  
+  - Speed scaling with score
