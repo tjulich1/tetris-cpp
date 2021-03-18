@@ -10,6 +10,7 @@ Current project state:
   - Simple wall kicks
   - Basic rotation system
   - Game ends when new piece cannot spawn
+  
 Future additions:
   - Main menu
   - Replay feature
