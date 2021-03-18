@@ -23,6 +23,7 @@ class TetrisPiece {
     void Down();
     void Clockwise();
     void CounterClockwise();
+    void ResetPosition();
 
     PieceState get_current_state();
     PieceState get_clockwise_state();
@@ -32,6 +33,8 @@ class TetrisPiece {
     int get_col();
     char get_type();
   private:
+    const static int default_col_ = 4;
+
     int row_;
     int col_;
     std::vector<PieceState> states_;

@@ -93,6 +93,8 @@ void TetrisGame::NextPiece() {
   // Then spawn a new piece
   current_piece_ = generator_.GetPiece();
 
+  can_swap_ = true;
+
   // Check to ensure that the new piece can at least move down once, or else end the game.
   bool should_continue_game = IsLegalMove(CURRENT_STATE, 1, 0);
   if (!should_continue_game) {
@@ -146,6 +148,25 @@ void TetrisGame::RotateClockwise() {
 void TetrisGame::RotateCounterClockwise() {
   if (IsLegalMove(COUNTER_CLOCKWISE_STATE, 0, 0)) {
     current_piece_.CounterClockwise();
+  }
+}
+
+void TetrisGame::SwapPiece() {
+  if (can_swap_) {
+    can_swap_ = false;
+    TetrisPiece temp = current_piece_;
+    
+    // held_piece_ would only have this type if a swap hasn't occurred yet, i.e. held_piece_ doesn't
+    // have a set block type and gets the default type '-'.
+    if (held_piece_.get_type() == '-') {
+      held_piece_ = current_piece_;
+      current_piece_ = generator_.GetPiece();
+    } else {
+      TetrisPiece temp = held_piece_;
+      held_piece_ = current_piece_;
+      current_piece_ = temp;
+      current_piece_.ResetPosition();
+    }
   }
 }
 

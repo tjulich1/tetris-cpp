@@ -38,6 +38,7 @@ class TetrisGame {
     void DropPiece();
     void RotateClockwise();
     void RotateCounterClockwise();
+    void SwapPiece();
     void TogglePause();
     void StartGame();
 
@@ -49,7 +50,9 @@ class TetrisGame {
     PieceGenerator generator_;
     TetrisBoard board_;
     TetrisPiece current_piece_;
-    
+    TetrisPiece held_piece_;
+    bool can_swap_ = true;
+
     std::map<char, SDL_Color>* block_color_map_;
     
     SDL_Texture* pause_message_;

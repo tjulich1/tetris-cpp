@@ -54,7 +54,7 @@ void TetrisInput::HandleUnpaused(SDL_Event e) {
       case SDLK_RSHIFT:
       case SDLK_LSHIFT:
       case SDLK_c:
-        std::cout << "Hold piece" << std::endl;
+        game_->SwapPiece();
         break;
       case SDLK_ESCAPE:
         game_->TogglePause();
