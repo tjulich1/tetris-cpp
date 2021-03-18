@@ -16,7 +16,7 @@ LIBRARY_PATHS =
 COMPILER_FLAGS = -w#-Wl,-subsystem,windows
 
 # LINKER_FLAGS specifies the libraries we are linking against
-LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf
+LINKER_FLAGS = -lSDL2 -lSDL2_ttf
 
 # OBJ_NAME specifies the name of our executable
 OBJ_NAME = Tetris
