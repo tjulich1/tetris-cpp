@@ -10,6 +10,8 @@ int y_offset = 50;
 
 TetrisGame::TetrisGame(SDL_Renderer* p_renderer) : renderer_(p_renderer) {
   board_ = TetrisBoard(x_offset, y_offset, kBlockDim);
+  held_piece_box_ = HeldPieceBox(2*x_offset + (kBlockDim*board_.get_cols()),
+    y_offset, 100, 100);
   block_color_map_ = new std::map<char, SDL_Color>();
   InitColorMap();
   current_piece_ = generator_.GetPiece();
@@ -57,6 +59,8 @@ void TetrisGame::Render() {
   SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
   SDL_RenderClear(renderer_);
 
+  held_piece_box_.Render(renderer_, block_color_map_);
+
   if (paused_) {
     RenderPause();
   } else {
@@ -80,6 +84,9 @@ void TetrisGame::Render() {
       SDL_RenderFillRect(renderer_, &rect);
     }
   }
+
+  
+
   SDL_RenderPresent(renderer_);
 }
 
@@ -160,10 +167,12 @@ void TetrisGame::SwapPiece() {
     // have a set block type and gets the default type '-'.
     if (held_piece_.get_type() == '-') {
       held_piece_ = current_piece_;
+      held_piece_box_.SetHeldPiece(held_piece_);
       current_piece_ = generator_.GetPiece();
     } else {
       TetrisPiece temp = held_piece_;
       held_piece_ = current_piece_;
+      held_piece_box_.SetHeldPiece(held_piece_);
       current_piece_ = temp;
       current_piece_.ResetPosition();
     }

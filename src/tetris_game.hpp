@@ -6,6 +6,7 @@
 #include "piece_generator.hpp"
 #include "tetris_board.hpp"
 #include "tetris_piece.hpp"
+#include "held_piece_box.hpp"
 
 #include <map>
 #include <SDL.h>
@@ -49,6 +50,8 @@ class TetrisGame {
     
     PieceGenerator generator_;
     TetrisBoard board_;
+    HeldPieceBox held_piece_box_ = HeldPieceBox(0, 0, 0, 0);
+
     TetrisPiece current_piece_;
     TetrisPiece held_piece_;
     bool can_swap_ = true;
@@ -60,6 +63,7 @@ class TetrisGame {
     bool paused_;
     
     void RenderPause();
+
     unsigned int timer_interval_;
 
     bool IsPieceInBounds(PieceState p_state_to_check, int p_row_transform, int p_col_transform);

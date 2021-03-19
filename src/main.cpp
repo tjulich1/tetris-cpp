@@ -9,7 +9,8 @@
 #include <SDL_ttf.h>
 
 //Screen dimension constants
-const int kWindowWidth = 300;
+const int kWindowWidth = 450
+;
 const int kWindowHeight = 500;
 
 TetrisGame* current_game;
@@ -42,7 +43,6 @@ int main( int argc, char* args[] )
 		if (TTF_Init() == -1) {
 			std::cout << "Failed to initialize SDL_ttf: " << TTF_GetError() << std::endl;
 		} else {
-			std::cout << "Here?" << std::endl;
 			window = SDL_CreateWindow( "Tetris", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 		  kWindowWidth, kWindowHeight, SDL_WINDOW_SHOWN );
 
