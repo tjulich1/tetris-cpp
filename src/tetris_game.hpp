@@ -56,6 +56,9 @@ class TetrisGame {
     TetrisPiece held_piece_;
     bool can_swap_ = true;
 
+    int x_padding_ = 50;
+    int y_padding_ = 50;
+
     std::map<char, SDL_Color>* block_color_map_;
     
     SDL_Texture* pause_message_;

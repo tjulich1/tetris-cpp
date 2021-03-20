@@ -5,16 +5,22 @@
 
 #include <iostream>
 
-int x_offset = 50;
-int y_offset = 50;
+
 
 TetrisGame::TetrisGame(SDL_Renderer* p_renderer) : renderer_(p_renderer) {
-  board_ = TetrisBoard(x_offset, y_offset, kBlockDim);
-  held_piece_box_ = HeldPieceBox(2*x_offset + (kBlockDim*board_.get_cols()),
-    y_offset, 100, 100);
+
+  
+
+  board_ = TetrisBoard(x_padding_, y_padding_, kBlockDim);
+  held_piece_box_ = HeldPieceBox(2*x_padding_ + (kBlockDim*board_.get_cols()),
+    y_padding_, 100, 100);
   block_color_map_ = new std::map<char, SDL_Color>();
   InitColorMap();
+
   current_piece_ = generator_.GetPiece();
+  current_piece_.SetXOffset(x_padding_);
+  current_piece_.SetYOffset(y_padding_);
+  current_piece_.SetBlockDim(kBlockDim);
 
   font_ = TTF_OpenFont("OpenSans-Regular.ttf", 40);
   SDL_Surface* surface_message = TTF_RenderText_Solid(font_, "Pause", {0,0,0});
@@ -46,7 +52,7 @@ void TetrisGame::InitColorMap() {
 
 void TetrisGame::RenderPause() {
   SDL_Color black = {0, 0, 0};
-  SDL_Rect message_rect{0, 0, 200, 120};
+  SDL_Rect message_rect{x_padding_, y_padding_, board_.get_cols()*kBlockDim, kBlockDim*board_.get_rows()/4};
   SDL_RenderCopy(renderer_, pause_message_, NULL, &message_rect);
 }
 
@@ -67,26 +73,9 @@ void TetrisGame::Render() {
     // Draw board
     board_.Render(renderer_, block_color_map_);
 
-    PieceState cur_state = current_piece_.get_current_state();
-    // Lookup the color of the current piece.
-    SDL_Color block_color = block_color_map_->find(current_piece_.get_type())->second;
-    SDL_SetRenderDrawColor(renderer_, block_color.r, block_color.g, block_color.b, 255);
-
-    // Draw each of the blocks of the current piece.
-    for (int i = 0; i < cur_state.blocks.size(); i++) {
-      Block current_block = cur_state.blocks[i];
-      rect = {
-        x_offset + (current_piece_.get_col()+current_block.x)*kBlockDim,
-        y_offset + (current_piece_.get_row()+current_block.y)*kBlockDim,
-        kBlockDim,
-        kBlockDim
-      };
-      SDL_RenderFillRect(renderer_, &rect);
-    }
+    // Draw the current piece
+    current_piece_.Render(renderer_, block_color_map_);
   }
-
-  
-
   SDL_RenderPresent(renderer_);
 }
 
@@ -99,6 +88,9 @@ void TetrisGame::NextPiece() {
 
   // Then spawn a new piece
   current_piece_ = generator_.GetPiece();
+  current_piece_.SetXOffset(x_padding_);
+  current_piece_.SetYOffset(y_padding_);
+  current_piece_.SetBlockDim(kBlockDim);
 
   can_swap_ = true;
 
@@ -169,6 +161,9 @@ void TetrisGame::SwapPiece() {
       held_piece_ = current_piece_;
       held_piece_box_.SetHeldPiece(held_piece_);
       current_piece_ = generator_.GetPiece();
+      current_piece_.SetXOffset(x_padding_);
+      current_piece_.SetYOffset(y_padding_);
+      current_piece_.SetBlockDim(kBlockDim);
     } else {
       TetrisPiece temp = held_piece_;
       held_piece_ = current_piece_;
