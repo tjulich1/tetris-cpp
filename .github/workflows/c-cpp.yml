@@ -13,8 +13,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: install sdl
+    - name: update packages
       run: sudo apt-get update
+    - name: install sdl
       run: sudo apt-get install libsdl2-dev
     - name: install sdl font
       run: sudo apt-get install libsdl2-ttf-dev
