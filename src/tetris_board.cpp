@@ -44,9 +44,10 @@ void TetrisBoard::Render(SDL_Renderer* p_renderer, std::map<char, SDL_Color>* p_
   }
 }
 
-void TetrisBoard::ClearRows() {
+int TetrisBoard::ClearRows() {
   std::vector<char> current_row;
   bool should_clear = true;
+  int rows_cleared = 0;
   for (int i = 0; i < blocks_.size(); i++) {
     current_row = blocks_[i];
     for (int j = 0; j < current_row.size(); j++) {
@@ -60,9 +61,11 @@ void TetrisBoard::ClearRows() {
       std::fill(empty_row.begin(), empty_row.end(), '-');
       blocks_.erase(blocks_.begin() + i);
       blocks_.insert(blocks_.begin(), empty_row);
+      rows_cleared++;
     }
     should_clear = true;
   }
+  return rows_cleared;
 }
 
 void TetrisBoard::LockPiece(TetrisPiece p_piece) {

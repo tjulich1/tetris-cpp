@@ -2,18 +2,12 @@
 
 #include "tetris_game.hpp"
 #include "block.hpp"
-
 #include <iostream>
 
-
-
 TetrisGame::TetrisGame(SDL_Renderer* p_renderer) : renderer_(p_renderer) {
-
-  
-
   board_ = TetrisBoard(x_padding_, y_padding_, kBlockDim);
-  held_piece_box_ = HeldPieceBox(2*x_padding_ + (kBlockDim*board_.get_cols()),
-    y_padding_, 100, 100);
+  held_piece_box_ = HeldPieceBox(SDL_Rect{2*x_padding_ + (kBlockDim*board_.get_cols()),
+    y_padding_, 100, 100});
   block_color_map_ = new std::map<char, SDL_Color>();
   InitColorMap();
 
@@ -27,6 +21,7 @@ TetrisGame::TetrisGame(SDL_Renderer* p_renderer) : renderer_(p_renderer) {
   pause_message_ = SDL_CreateTextureFromSurface(renderer_, surface_message);
   SDL_FreeSurface(surface_message);
   paused_ = false;
+  score_ = 0;
 }
 
 TetrisGame::~TetrisGame() {
@@ -40,7 +35,6 @@ TetrisGame::~TetrisGame() {
   that can appear on the game board.
 */
 void TetrisGame::InitColorMap() {
-
   block_color_map_->insert({'j', SDL_Color{3, 65, 174}});
   block_color_map_->insert({'s', SDL_Color{114, 203, 59}});
   block_color_map_->insert({'o', SDL_Color{255, 213, 0}});
@@ -84,7 +78,7 @@ void TetrisGame::NextPiece() {
   board_.LockPiece(current_piece_);
 
   // Clear any rows that are completed.
-  board_.ClearRows();
+  AddScore(board_.ClearRows());
 
   // Then spawn a new piece
   current_piece_ = generator_.GetPiece();
@@ -187,6 +181,10 @@ bool TetrisGame::IsPieceInBounds(PieceState p_state_to_check, int p_row_transfor
     }
   }
   return in_bounds;
+}
+
+void TetrisGame::AddScore(int p_rows_cleared) {
+  score_ += p_rows_cleared * 100;
 }
 
 bool TetrisGame::CheckCollisions(PieceState p_state_to_check, int p_row_transform, int p_col_transform) {

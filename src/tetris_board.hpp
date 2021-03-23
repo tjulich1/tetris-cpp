@@ -13,7 +13,7 @@ class TetrisBoard {
     TetrisBoard(int p_x_offset = 0, int p_y_offset = 0, int p_block_dim = 10);
     
     void Render(SDL_Renderer* p_renderer, std::map<char, SDL_Color>* p_colors);
-    void ClearRows();
+    int ClearRows();
     void LockPiece(TetrisPiece p_piece);
     bool IsBlockFilled(int p_row, int p_col);
     char GetBlock(int p_row, int p_col);

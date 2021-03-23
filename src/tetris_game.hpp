@@ -50,7 +50,7 @@ class TetrisGame {
     
     PieceGenerator generator_;
     TetrisBoard board_;
-    HeldPieceBox held_piece_box_ = HeldPieceBox(0, 0, 0, 0);
+    HeldPieceBox held_piece_box_ = HeldPieceBox(SDL_Rect{0,0,0,0});
 
     TetrisPiece current_piece_;
     TetrisPiece held_piece_;
@@ -58,6 +58,7 @@ class TetrisGame {
 
     int x_padding_ = 50;
     int y_padding_ = 50;
+    int score_;
 
     std::map<char, SDL_Color>* block_color_map_;
     
@@ -73,7 +74,7 @@ class TetrisGame {
     bool CheckCollisions(PieceState p_state_to_check, int p_row_transform, int p_col_transform);
     bool IsLegalMove(StateCode p_state_code, int p_row_transform, int p_col_transform);
     
-    void LockPiece();
+    void AddScore(int p_rows_cleared);
     void NextPiece();
     void InitColorMap();
 };

@@ -32,13 +32,12 @@ unsigned int Tick(unsigned int p_interval, void* p_params) {
 int main( int argc, char* args[] )
 {
 	SDL_Window* window = NULL;
-	
+
 	//Initialize SDL
 	if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0 ) {
 		std::cout << "SDL Error: " << SDL_GetError() << std::endl;
 	}
 	else {
-		std::cout << "Not even here" << std::endl;
 		// Check if initializing SDL_ttf fails.
 		if (TTF_Init() == -1) {
 			std::cout << "Failed to initialize SDL_ttf: " << TTF_GetError() << std::endl;
@@ -57,6 +56,7 @@ int main( int argc, char* args[] )
 				// Create new instance of game, using renderer.
 		  	current_game = new TetrisGame(renderer);
 
+				// Create user input, passing in the game that is receiving the input.
 				TetrisInput user_input(current_game);
 
 				bool quit = false;
@@ -71,7 +71,6 @@ int main( int argc, char* args[] )
 
 				SDL_DestroyRenderer(renderer);
 			}
-		
 		}
 	}
 	SDL_DestroyWindow( window );

@@ -1,16 +1,18 @@
-#include <SDL.h>
-#include "tetris_piece.hpp"
-#include <map>
+#ifndef HELD_PIECE_BOX_HPP
+#define HELD_PIECE_BOX_HPP
 
-class HeldPieceBox {
+#include <SDL.h>
+#include <map>
+#include "tetris_piece.hpp"
+#include "render_box.hpp"
+
+class HeldPieceBox : public RenderBox {
   public: 
-    HeldPieceBox(int p_x_offset, int p_y_offset, int p_width, int p_height);
-    void Render(SDL_Renderer* p_renderer_, std::map<char, SDL_Color>* p_colors);
+    HeldPieceBox(SDL_Rect p_bounds);
+    void Render(SDL_Renderer* p_renderer_, std::map<char, SDL_Color>* p_colors) override;
     void SetHeldPiece(TetrisPiece p_held_piece);
   private:
     TetrisPiece held_piece_;
-    int x_offset_;
-    int y_offset_;
-    int width_;
-    int height_;
 };
+
+#endif
