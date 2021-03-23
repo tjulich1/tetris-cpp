@@ -12,12 +12,12 @@ Current project state:
   - Simple wall kicks
   - Basic rotation system
   - Game ends when new piece cannot spawn
+  - Swap Piece
+  - Scoring System
   
 Future additions:
   - Main menu
   - Replay feature
-  - Save piece
-  - Score
   - Improve rotation system
   - More advanced wall kicks
   - Speed scaling with score

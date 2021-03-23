@@ -8,6 +8,11 @@ TetrisGame::TetrisGame(SDL_Renderer* p_renderer) : renderer_(p_renderer) {
   board_ = TetrisBoard(x_padding_, y_padding_, kBlockDim);
   held_piece_box_ = HeldPieceBox(SDL_Rect{2*x_padding_ + (kBlockDim*board_.get_cols()),
     y_padding_, 100, 100});
+
+  score_box_ = ScoreBox(SDL_Rect{
+    2*x_padding_ + (kBlockDim*board_.get_cols()), 2*y_padding_ + 100, 100, 100
+  });
+
   block_color_map_ = new std::map<char, SDL_Color>();
   InitColorMap();
 
@@ -60,6 +65,7 @@ void TetrisGame::Render() {
   SDL_RenderClear(renderer_);
 
   held_piece_box_.Render(renderer_, block_color_map_);
+  score_box_.Render(renderer_, block_color_map_);
 
   if (paused_) {
     RenderPause();
@@ -79,6 +85,7 @@ void TetrisGame::NextPiece() {
 
   // Clear any rows that are completed.
   AddScore(board_.ClearRows());
+  score_box_.UpdateScore(score_);
 
   // Then spawn a new piece
   current_piece_ = generator_.GetPiece();

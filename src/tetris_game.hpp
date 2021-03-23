@@ -7,6 +7,7 @@
 #include "tetris_board.hpp"
 #include "tetris_piece.hpp"
 #include "held_piece_box.hpp"
+#include "score_box.hpp"
 
 #include <map>
 #include <SDL.h>
@@ -51,6 +52,7 @@ class TetrisGame {
     PieceGenerator generator_;
     TetrisBoard board_;
     HeldPieceBox held_piece_box_ = HeldPieceBox(SDL_Rect{0,0,0,0});
+    ScoreBox score_box_ = ScoreBox(SDL_Rect{0,0,0,0});
 
     TetrisPiece current_piece_;
     TetrisPiece held_piece_;
