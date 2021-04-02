@@ -2,7 +2,7 @@
 
 # Tetris Clone
 
-<img align="right" src="https://user-images.githubusercontent.com/33639246/111414167-bbe06e80-869c-11eb-9988-e00579d45473.JPG">
+<img align="right" src="https://user-images.githubusercontent.com/33639246/113367356-a2802900-9310-11eb-80ea-238a373cea87.JPG">
 
 A small tetris clone created to learn SDL and refresh on C++.
 
