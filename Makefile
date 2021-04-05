@@ -24,3 +24,10 @@ OBJ_NAME = Tetris
 # This is the target that compiles our executable
 all : $(OBJS)
 	g++ $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)
+
+TEST_OBJS = ./test/*.cpp ./test/*.hpp ./src/tetris_board.hpp ./src/tetris_board.cpp 
+
+TEST_OUTPUT = ./test/test
+
+test : $(TEST_OBJS)
+	g++ $(TEST_OBJS) -o $(TEST_OUTPUT)

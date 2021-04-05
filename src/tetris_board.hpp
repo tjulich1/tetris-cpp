@@ -9,7 +9,7 @@
 #include <SDL.h>
 
 class TetrisBoard {
-  public:
+  public: 
     TetrisBoard(int p_x_offset = 0, int p_y_offset = 0, int p_block_dim = 10);
     
     void Render(SDL_Renderer* p_renderer, std::map<char, SDL_Color>* p_colors);
@@ -20,7 +20,9 @@ class TetrisBoard {
         
     int get_rows();
     int get_cols();
-    
+    int get_x_offset();
+    int get_y_offset();
+    int get_block_dim();
   private:
     std::vector<std::vector<char>> blocks_;
     int rows_;
